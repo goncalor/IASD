@@ -12,6 +12,6 @@ args = parser.parse_args()
 
 if __name__ == "__main__":
 
-    print('Creating graph... ', end='')
-    graph = iofiles.newGraph(args.map)
-    print('Done.')
+	print('Creating graph... ', end='')
+	graph = iofiles.newGraph(args.map)
+	print('Done.')
