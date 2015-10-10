@@ -8,13 +8,11 @@ class Graph:
 	edges= []
 	
 	def __init__(self, nodes_nr):
-		print('ola');
 		self.nodes= list()
 		self.edges= list()
 
 		for id in range(nodes_nr + 1):
 			self.nodes.append(node.Node(id))
-			print(self.nodes[id].id)
 		
 		
 	def addEdge(self, nodeA_id, nodeB_id, transType, duration, price, ti, tf, period):

@@ -3,6 +3,7 @@ import iofiles
 
 # other modules
 import argparse
+from pprint import pprint
 
 
 parser = argparse.ArgumentParser(description='Solves "travel agent" problems.')
@@ -15,3 +16,5 @@ if __name__ == "__main__":
 	print('Creating graph... ', end='')
 	graph = iofiles.newGraph(args.map)
 	print('Done.')
+
+	# pprint(iofiles.readClientList(args.requests))

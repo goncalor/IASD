@@ -44,7 +44,7 @@ def readClientList(filename):
 		l = line.split()
 		d = {}
 		d['clientNr'], d['from'], d['to'], d['timeAvail'], \
-						d['criterion'] = l[:5]
+				d['criterion'] = l[:5]
 
 		for constr in ['A1', 'A2', 'A3', 'B1', 'B2']:
 			if constr in l:
@@ -52,4 +52,4 @@ def readClientList(filename):
 
 		clients.append(d)
 
-		return clients
+	return clients
