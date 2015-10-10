@@ -15,5 +15,9 @@ def newgraph(filename):
 
     nrCities, nrEdges = f.readline().split()
 
+    graph = [Node(id) for id in range(nrCities + 1)]
+
     for line in f:
         city0, city1, transType, duration, price, ti, tf, period = line.split()
+
+        edge = Edge(graph[city0], graph[city1], transType, duration, price, ti, tf, period)
