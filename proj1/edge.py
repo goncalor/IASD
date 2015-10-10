@@ -1,3 +1,5 @@
+import node
+
 
 # Defines the Edge class.
 
@@ -12,3 +14,10 @@ class Edge:
         self.ti = ti
         self.tf = tf
         self.period = period
+		
+	def sorted_price()
+		
+	
+	def sorted_time()
+	
+	def 
