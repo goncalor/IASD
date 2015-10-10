@@ -11,7 +11,7 @@ class Graph:
 		nodes= list()
 		edges= list()
 		
-		for id in range(nodes_nr):
+		for id in range(nodes_nr + 1):
 			nodes.append(Node(id))
 		
 		

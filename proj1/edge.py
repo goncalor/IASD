@@ -15,9 +15,9 @@ class Edge:
         self.tf = tf
         self.period = period
 		
-	def sorted_price()
+        def sorted_price():
+            pass
 		
 	
-	def sorted_time()
-	
-	def 
+        def sorted_time():
+            pass

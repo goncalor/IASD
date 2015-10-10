@@ -19,12 +19,14 @@ def newGraph(filename):
 
     nrCities, nrEdges = [int(i) for i in f.readline().split()]
 
-    graph = Graph()
+    network = Graph(nrCities)
 
     for line in f:
         city0, city1, transType, duration, price, ti, tf, period = line.split()
 
-        graph.addEdge(city0, city1, transType, duration, price, ti, tf, period)
+        network.addEdge(city0, city1, transType, duration, price, ti, tf, period)
+
+    return network
 
 def readClientList(filename):
     if not os.path.isfile(filename):
@@ -39,7 +41,7 @@ def readClientList(filename):
     for line in f:
         l = line.split()
         d = {}
-        d['clientNr'], d['from'], d['to'], d['timeAvail'] \\
+        d['clientNr'], d['from'], d['to'], d['timeAvail'], \
                 d['criterion'] = l[:5]
 
         for constr in ['A1', 'A2', 'A3', 'B1', 'B2']:

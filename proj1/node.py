@@ -4,11 +4,10 @@ import edge
 
 class Node:
 
-	neigh=[]	#neighbours
-	id= -1		#city id
-		
+    neigh=[]	#neighbours
+    id= -1	#city id
 
     def __init__(self, id):
-		neigh= list()
-		self.id= id
+        neigh= list()
+        self.id= id
 
