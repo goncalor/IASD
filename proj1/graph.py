@@ -12,12 +12,12 @@ class Graph:
 		edges= list()
 		
 		for id in range(nodes_nr + 1):
-			nodes.append(Node(id))
+			nodes.append(node.Node(id))
 		
 		
 	def addEdge(self, nodeA_id, nodeB_id, transType, duration, price, ti, tf, period):
-		nodeA= nodes[nodeA_id]
-		nodeB= nodes[nodeB_id]
+		nodeA= self.nodes[nodeA_id]
+		nodeB= self.nodes[nodeB_id]
 		
 		new_edge= Edge(nodeA, nodeB, transType, duration, price, ti, tf, period)
 		edges.append(new_edge)

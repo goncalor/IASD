@@ -19,12 +19,13 @@ def newGraph(filename):
 
     nrCities, nrEdges = [int(i) for i in f.readline().split()]
 
-    network = Graph(nrCities)
+    network = graph.Graph(nrCities)
 
     for line in f:
         city0, city1, transType, duration, price, ti, tf, period = line.split()
 
-        network.addEdge(city0, city1, transType, duration, price, ti, tf, period)
+        network.addEdge(int(city0), int(city1), transType, \
+                int(duration), int(price), int(ti), int(tf), int(period))
 
     return network
 
