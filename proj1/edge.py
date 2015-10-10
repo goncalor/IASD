@@ -21,3 +21,11 @@ class Edge:
 	
 		def sorted_time():
 			pass
+"""
+		def __eq__(self, edge):
+			if (self.nodeA == edge.nodeA and self.nodeB == edge.nodeB) \
+					or (self.nodeA == edge.nodeB && self.nodeB == edge.nodeA):
+				return True
+			else:
+				return False
+"""			
