@@ -18,3 +18,5 @@ if __name__ == "__main__":
 	print('Done.')
 
 	# pprint(iofiles.readClientList(args.requests))
+
+	print(graph)

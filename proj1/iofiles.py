@@ -20,7 +20,7 @@ def newGraph(filename):
 
 	nrCities, nrEdges = [int(i) for i in f.readline().split()]
 
-	network = graph.Graph(nrCities)
+	network = graph.Graph(nrCities + 1)
 
 	for line in f:
 		city0, city1, transType, duration, price, ti, tf, period = line.split()

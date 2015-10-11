@@ -39,5 +39,9 @@ class Graph:
 	
 		
 	def __str__(self):
-		pass
+		s = ''
+		for node in self.nodes:
+			s += str(node) + '\n'
+
+		return s
 
