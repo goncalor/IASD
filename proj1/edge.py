@@ -5,15 +5,14 @@ import node
 
 class Edge:
 
-	def __init__(self, nodeA, nodeB, transType, duration, price, ti, tf, period):
+	nodeA = None
+	nodeB = None
+	info = None
+
+	def __init__(self, nodeA, nodeB, info=None):
 		self.nodeA = nodeA
 		self.nodeB = nodeB
-		self.transType = transType
-		self.duration = duration
-		self.price = price
-		self.ti = ti
-		self.tf = tf
-		self.period = period
+		self.info = info
 		
 		def sorted_price():
 			pass

@@ -5,6 +5,7 @@
 
 # our created modules
 import node, edge, graph
+from edgeinfo import EdgeInfo
 
 # other modules
 import os.path
@@ -24,8 +25,9 @@ def newGraph(filename):
 	for line in f:
 		city0, city1, transType, duration, price, ti, tf, period = line.split()
 
-		network.addEdge(int(city0), int(city1), transType, \
-				int(duration), int(price), int(ti), int(tf), int(period))
+		network.addEdge(int(city0), int(city1),
+				EdgeInfo(transType, int(duration), int(price), \
+						int(ti), int(tf), int(period)))
 
 	return network
 

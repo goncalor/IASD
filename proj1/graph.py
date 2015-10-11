@@ -1,30 +1,35 @@
 
-import node
-import edge
+from node import Node
+from edge import Edge
 
 class Graph:
 
 	nodes= []
 	edges= []
 	
-	def __init__(self, nodes_nr):
-		self.nodes= list()
-		self.edges= list()
+	def __init__(self, nrNodes=0, lst=None):
+		self.nodes= []
+		self.edges= []
 
-		for id in range(nodes_nr + 1):
-			self.nodes.append(node.Node(id))
+		if lst != None:
+			id_ = 0
+			for item in lst:
+				self.nodes.append(Node(id_, item))
+		else:
+			for id_ in range(nrNodes):
+				self.nodes.append(Node(id_))
+
 		
-		
-	def addEdge(self, nodeA_id, nodeB_id, transType, duration, price, ti, tf, period):
+	def addEdge(self, nodeA_id, nodeB_id, info):
 		nodeA= self.nodes[nodeA_id]
 		nodeB= self.nodes[nodeB_id]
 		
-		new_edge= edge.Edge(nodeA, nodeB, transType, duration, price, ti, tf, period)
-		self.edges.append(new_edge)
-		
+		new_edge= Edge(nodeA, nodeB, info)
+
 		nodeA.neigh.append(new_edge)
 		nodeB.neigh.append(new_edge)
-		
+		self.edges.append(new_edge)
+
 		
 	def sorted_price(self):
 		return sorted(self.edges, key= attrgetter('price'))
@@ -33,6 +38,6 @@ class Graph:
 		return sorted(self.edges, key= attrgetter('duration'))
 	
 		
-		
-		
-		
+	def __str__(self):
+		pass
+
