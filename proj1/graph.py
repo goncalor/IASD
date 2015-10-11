@@ -1,6 +1,7 @@
 
 from node import Node
 from edge import Edge
+from operator import attrgetter
 
 class Graph:
 
@@ -32,10 +33,10 @@ class Graph:
 
 		
 	def sorted_price(self):
-		return sorted(self.edges, key= attrgetter('price'))
+		return sorted(self.edges, key= attrgetter('info.price'))
 		
 	def sorted_duration(self):
-		return sorted(self.edges, key= attrgetter('duration'))
+		return sorted(self.edges, key= attrgetter('info.duration'))
 	
 		
 	def __str__(self):
