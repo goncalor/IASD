@@ -14,5 +14,5 @@ class Node:
 		self.info = info
 
 	def __str__(self):
-		return str(self.id_) + ': ' + str([edge.nodeA.id_ if edge.nodeA.id_ != self
-			else edge.nodeA.id_ for edge in self.neigh])
+		return str(self.id_) + ': ' + str([edge.nodeA.id_ if edge.nodeA is
+			not self else edge.nodeB.id_ for edge in self.neigh])
