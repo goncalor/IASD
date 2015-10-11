@@ -3,8 +3,7 @@
 
 class EdgeInfo:
 
-	def __init__(self, transType, duration, price, ti, tf,
-			period):
+	def __init__(self, transType, duration, price, ti, tf, period):
 
 		self.transType = transType
 		self.duration = duration
