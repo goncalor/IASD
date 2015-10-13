@@ -16,3 +16,9 @@ class Node:
 	def __str__(self):
 		return str(self.id_) + ': ' + str([edge.nodeA.id_ if edge.nodeA is
 			not self else edge.nodeB.id_ for edge in self.neigh])
+
+	def __eq__(self, other):
+		if self.id_ == other.id_:
+			return True
+		else:
+			return False
