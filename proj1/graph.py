@@ -32,10 +32,12 @@ class Graph:
 		nodeB.neigh.append(new_edge)
 		self.edges.append(new_edge)
 
+	"""
 	def addEdge(self, edgy):
 		edgy.nodeA.neigh.append(edgy)
 		edgy.nodeB.neigh.append(edgy)
 		self.edges.append(edgy)
+	"""
 
 
 	def removeEdge(self, rem_edge):
@@ -101,7 +103,7 @@ class Graph:
 				optimal_edges.append(edge_aux)
 
 			#remove all edges from the current node to add the optimal later
-			while len(relgraph.nodes[current_node].neigh) > 0
+			while len(relgraph.nodes[current_node].neigh) > 0:
 				relgraph.removeEdge(relgraph.nodes[current_node].neigh[0])
 
 			for edgy in optimal_edges:
