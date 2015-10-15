@@ -18,6 +18,7 @@ class Node:
 			not self else edge.nodeB.id_ for edge in self.neigh])
 
 	def __eq__(self, other):
+		""" Returns True if the IDs of the nodes match """
 		if self.id_ == other.id_:
 			return True
 		else:
