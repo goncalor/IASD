@@ -1,5 +1,6 @@
 # our created modules
 import iofiles
+import genericsearch
 
 # other modules
 import argparse
@@ -17,6 +18,15 @@ if __name__ == "__main__":
 	graph = iofiles.newGraph(args.map)
 	print('Done.')
 
-	# pprint(iofiles.readClientList(args.requests))
-
 	print(graph)
+
+	clients_list = iofiles.read_client_list(args.requests)
+
+	#pprint(clients_list)
+
+	client_no = 0
+	ans = genericsearch.generic_search(graph,
+			graph.nodes[clients_list[client_no]['from']],
+			graph.nodes[clients_list[client_no]['to']])
+
+	print(ans)

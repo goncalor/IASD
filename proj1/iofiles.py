@@ -32,7 +32,7 @@ def newGraph(filename):
 	return network
 
 
-def readClientList(filename):
+def read_client_list(filename):
 	if not os.path.isfile(filename):
 		print(filename + ' not found')
 		exit()
@@ -40,13 +40,15 @@ def readClientList(filename):
 	f = open(filename, 'r')
 
 	clients = []
-	nrClients = int(f.readline())
+	nr_clients = int(f.readline())
 
 	for line in f:
 		l = line.split()
 		d = {}
-		d['clientNr'], d['from'], d['to'], d['timeAvail'], \
-				d['criterion'] = l[:5]
+		d['clientNr'], d['from'], d['to'], d['timeAvail'] = \
+				[int(i) for i in l[:4]]
+
+		d['criterion'] = l[4]
 
 		for constr in ['A1', 'A2', 'A3', 'B1', 'B2']:
 			if constr in l:

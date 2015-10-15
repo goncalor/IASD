@@ -15,6 +15,8 @@ class Edge:
 		self.info = info
 
 	def neighbour(self, node):
+		""" Returns the node 'node' is connected to. """
+		#maybe change comparison to 'is'
 		if node == self.nodeA:
 			return self.nodeB
 		elif node == self.nodeB:
