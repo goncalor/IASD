@@ -31,16 +31,11 @@ mygraph.addEdge(6, 1, info)
 
 print('ola\n')
 
-print(mygraph.sorted_price()[0].nodeA, mygraph.sorted_price()[0].nodeB)
-print(mygraph.sorted_price()[1].nodeA, mygraph.sorted_price()[1].nodeB)
-print(mygraph.sorted_price()[2].nodeA, mygraph.sorted_price()[2].nodeB)
+print(mygraph)
+
+mygraph.removeEdge(mygraph.edges[0])
 
 print('\n')
 
-print(mygraph.sorted_duration()[0].nodeA, mygraph.sorted_duration()[0].nodeB)
-print(mygraph.sorted_duration()[1].nodeA, mygraph.sorted_duration()[1].nodeB)
-print(mygraph.sorted_duration()[2].nodeA, mygraph.sorted_duration()[2].nodeB)
+print(mygraph)
 
-
-print(mygraph.edges[0].nodeA.id_, mygraph.edges[0].nodeB.id_)
-print(mygraph.edges[0].neighbour(mygraph.nodes[1]))
