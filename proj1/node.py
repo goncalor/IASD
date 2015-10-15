@@ -1,5 +1,4 @@
 import edge
-
 # Defines the Node class.
 
 class Node:
@@ -17,7 +16,13 @@ class Node:
 		return str(self.id_) + ': ' + str([edge.nodeA.id_ if edge.nodeA is
 			not self else edge.nodeB.id_ for edge in self.neigh])
 
+
 	def __eq__(self, other):
+
+
+		if not isinstance(other, Node):
+			return False
+
 		if self.id_ == other.id_:
 			return True
 		else:
