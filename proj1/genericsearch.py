@@ -3,11 +3,10 @@ import sys
 def generic_search(graph, start_node, goal):
 
 	fringe = [(0, start_node)]
+	parent = [(None, None) for i in range(len(graph))]
+	known_cost = [sys.maxsize for i in range(len(graph))]
 
-	#make this general
-	for node in graph.nodes:
-		node.info = sys.maxsize
-	start_node.info = 0
+	known_cost[start_node.id_] = 0	# reaching the start node costs nothing
 
 	while fringe:
 		curr = remove(fringe)
@@ -26,13 +25,19 @@ def expand(fringe, curr):
 	for edge in curr.neigh:
 		neigh = edge.neighbour(curr)
 
-		neigh_known_cost = curr.info + edge.info.price
+		# the cost of the neighbour is this curr's cost plus the edge cost
+		neigh_known_cost = known_cost[neigh.id_] + edge.info.price
 		#heur = heuristic(relaxed_graph, neigh, goal)
 		heur = 0
 
-		if neigh.info > neigh_known_cost + heur:
-			neigh.info = neigh_known_cost
+		# if a new best path was found to neigh
+		if known_cost[neigh.id_] > neigh_known_cost + heur:
+			# update the cost to reach neigh
+			known_cost[neigh.id_] = neigh_known_cost
+			# add neigh to the fringe
 			fringe.append((neigh_known_cost + heur, neigh))
+			# update neigh's parent
+			parent[neigh.id_] = (curr.id_, edge.info.transType)
 
 	# "Sorts are guaranteed to be stable."
 	fringe.sort(key=lambda tup: tup[0], reverse=True)

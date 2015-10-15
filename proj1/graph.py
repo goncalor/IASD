@@ -62,6 +62,8 @@ class Graph:
 	def sorted_duration(self):
 		return sorted(self.edges, key= attrgetter('info.duration'))
 
+	def __len__(self):
+		return len(self.nodes)
 
 	def __str__(self):
 		s = ''
