@@ -22,24 +22,15 @@ class Graph:
 				self.nodes.append(Node(id_))
 
 
-	def addEdge(self, *args):
-		#nodeA_id, nodeB_id, info
-		if len(args) == 3:
-			nodeA= self.nodes[args[0]]
-			nodeB= self.nodes[args[1]]
+	def addEdge(self, nodeA_id, nodeB_id, info):
+		nodeA= self.nodes[nodeA_id]
+		nodeB= self.nodes[nodeB_id]
 
-			new_edge= Edge(nodeA, nodeB, args[2])
+		new_edge= Edge(nodeA, nodeB, info)
 
-			nodeA.neigh.append(new_edge)
-			nodeB.neigh.append(new_edge)
-			self.edges.append(new_edge)
-
-		#edge
-		elif len(args) == 1:
-			args[0].nodeA.neigh.append(args[0])
-			args[0].nodeB.neigh.append(args[0])
-			self.edges.append(args[0])
-
+		nodeA.neigh.append(new_edge)
+		nodeB.neigh.append(new_edge)
+		self.edges.append(new_edge)
 
 	"""
 	def addEdge(self, edgy):
