@@ -33,20 +33,17 @@ class Graph:
 		self.edges.append(new_edge)
 
 	def removeEdge(self, rem_edge):
-		#go through edges searching for the edge to remove
-		for i in range(len(self.edges)):
-			if rem_edge == self.edges[i]:
-				self.edges.remove(i)
-				#assuming there is only one edge with the same price and the same duration
-				break
 
-		for i in range(len(rem_edge.nodeA.neigh)):
-			if rem_edge == rem_edge.nodeA.neigh[i]:
-				rem_edge.nodeA.neigh.remove(i)
+		if not isinstance(rem_edge, Edge):
+			print('not instance')
+			return
 
-		for i in range(len(rem_edge.nodeB.neigh)):
-			if rem_edge == rem_edge.nodeB.neigh[i]:
-				rem_edge.nodeB.neigh.remove(i)
+		#remove the edge from the edges list
+		self.edges.remove(rem_edge)
+
+		#remove the edge from each nodes' neighbours
+		rem_edge.nodeA.neigh.remove(rem_edge)
+		rem_edge.nodeB.neigh.remove(rem_edge)
 
 		
 	def sorted_price(self):
