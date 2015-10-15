@@ -26,13 +26,13 @@ def expand(fringe, curr):
 	for edge in curr.neigh:
 		neigh = edge.neighbour(curr)
 
-		known_cost = curr.info + edge.info.price
-		#heur = heuristic(neigh)
+		neigh_known_cost = curr.info + edge.info.price
+		#heur = heuristic(relaxed_graph, neigh, goal)
 		heur = 0
 
-		if neigh.info > known_cost + heur:
-			neigh.info = known_cost + heur
-			fringe.append((known_cost + heur, neigh))
+		if neigh.info > neigh_known_cost + heur:
+			neigh.info = neigh_known_cost
+			fringe.append((neigh_known_cost + heur, neigh))
 
 	# "Sorts are guaranteed to be stable."
 	fringe.sort(key=lambda tup: tup[0], reverse=True)
