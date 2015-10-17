@@ -3,6 +3,7 @@ from node import Node
 from edge import Edge
 from operator import attrgetter
 from copy import deepcopy
+from transport import Transport
 
 class Graph:
 
@@ -21,7 +22,6 @@ class Graph:
 			for id_ in range(nrNodes):
 				self.nodes.append(Node(id_))
 
-
 	def addEdge(self, *args):
 		#nodeA_id, nodeB_id, info
 		if len(args) == 3:
@@ -37,16 +37,19 @@ class Graph:
 
 		#edge
 		elif len(args) == 1:
+			if not isinstance(args[0], Edge):
+				print('ERROR-> addEdge: expected 1 arg of type Edge')
+				return
 			args[0].nodeA.neigh.append(args[0])
 			args[0].nodeB.neigh.append(args[0])
 			self.edges.append(args[0])
-
 
 	def removeEdge(self, rem_edge):
 
 		if not isinstance(rem_edge, Edge):
 			print('not instance')
 			return
+
 
 		#remove the edge from the edges list
 		self.edges.remove(rem_edge)
@@ -73,10 +76,11 @@ class Graph:
 		return s
 
 	def deepcopy(self):
-		new_graph= Graph(0)
+		new_graph= Graph(len(self.nodes))
 
-		new_graph.nodes= deepcopy(self.nodes)
-		new_graph.edges= deepcopy(self.edges)
+		for edge in self.edges:
+			# if info becomes non static, clone it!
+			new_graph.addEdge(edge.nodeA.id_, edge.nodeB.id_, edge.info)
 
 		return new_graph
 
@@ -155,6 +159,38 @@ class Graph:
 				relgraph.addEdge(edgy)
 
 		return relgraph
+
+	def removeEdges(self, attr_name, attr):
+
+		if not (attr_name == 'price' or attr_name == 'duration' or attr_name == 'transType'):
+			print('ERROR-> removeEdges: cost_type must be "price" or "duration" or "transType"')
+			return
+
+		new_graph= self.deepcopy()
+
+		if attr_name == 'price':
+			for edge in list(new_graph.edges):
+				if edge.info.price > attr:
+					new_graph.removeEdge(edge)
+
+			return new_graph
+
+		elif attr_name == 'duration':
+			for edge in list(new_graph.edges):
+				if edge.info.duration > attr:
+					new_graph.removeEdge(edge)
+
+			return new_graph
+
+		elif attr_name == 'transType':
+			for edge in list(new_graph.edges):
+
+				if edge.info.transType == Transport(attr):
+					new_graph.removeEdge(edge)
+
+			return new_graph
+
+
 
 
 
