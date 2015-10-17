@@ -12,6 +12,7 @@ def generic_search(graph, start_node, goal, initparents, initcosts, initfringe,
 		curr = remove(fringe)
 
 		print(curr.id_)
+		print("path", path(start_node, curr, parents))
 
 		if isgoal(curr, goal):
 			return path(start_node, goal, parents)
