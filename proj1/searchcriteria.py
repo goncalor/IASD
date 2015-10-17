@@ -32,7 +32,7 @@ class SearchCriteria:
 		elif time_today < edge.info.ti:
 			waiting_time = edge.info.ti - time_today
 
-		return waiting_time
+		return waiting_time + edge.info.duration
 
 
 	def __price_edgecost(self, edge, ignored=None):
@@ -63,16 +63,24 @@ class SearchCriteria:
 		return known_costs
 
 
-	def path(self, start, goal, parents):
+	def path(self, start, goal, parents, known_costs):
 		path = []
 		node = goal.id_
+		total_time=0
+		total_cost=0
 
+		path.append((goal.id_, None))
+
+		# find the start from the end to build the path
 		while node != start.id_:
+			# parent index and the branch used to get to it
 			path.append(parents[node])
+
+			# node now "points" to the parent
 			node = parents[node][0]
 
-		path += [(start.id_, None)]
 		path.reverse()
+
 		return path
 
 
@@ -100,7 +108,7 @@ class SearchCriteria:
 		fringe.sort(key=lambda tup: tup[0], reverse=True)
 
 		# (id, cost)
-		print([(item[1].id_, item[0]) for item in fringe])
+		#print([(item[1].id_, item[0]) for item in fringe])
 		
 
 	def isgoal(self, node, goal):
