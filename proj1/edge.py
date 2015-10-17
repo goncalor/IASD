@@ -27,18 +27,18 @@ class Edge:
 	def __str__(self):
 		return '[' + str(self.nodeA.id_) + ',' + str(self.nodeB.id_) + ']'
 
-
 	def __eq__(self, other):
 
 		if not isinstance(other, Edge):
 			return False
 
-		#check if the nodes the edge connects are the same
+		# check if the nodes the edge connects are the same
 		if (self.nodeA == other.nodeA and self.nodeB == other.nodeB) \
 				or (self.nodeA == other.nodeB and self.nodeB == other.nodeA):
-			#if the the edges connected and the price and duration are the same, the edge is the same
+			# if the the edges connected and the price and duration are the same, the edge is the same
 			if self.info.price == other.info.price and self.info.duration == other.info.duration:
-				return True
+				if self.info.transType == other.info.transType:
+					return True
 		else:
 			return False
 
