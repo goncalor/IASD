@@ -7,10 +7,12 @@ class SearchCriteria:
 		# define how the cost to reach the next node is calculated
 		if client['criterion'] == 'tempo':
 			self.edgecost = self.__time_edgecost
+			self.initcosts = self.__time_initcosts
 		elif client['criterion'] == 'custo':
 			self.edgecost = self.__price_edgecost
+			self.initcosts = self.__price_initcosts
 
-		#self.client_info = client
+		self.client = client
 		#self.remove = self.remove
 		#self.expand = self.expand
 		#self.isgoal = self.isgoal
@@ -46,10 +48,18 @@ class SearchCriteria:
 		return [(None, None) for i in range(len(graph))]
 
 
-	def initcosts(self, graph, fringe):
+	def __price_initcosts(self, graph, fringe):
 		known_costs = [sys.maxsize for i in range(len(graph))]
 		for f, node in fringe:
 			known_costs[node.id_] = 0	# reaching the start nodes costs nothing
+		return known_costs
+
+
+	def __time_initcosts(self, graph, fringe):
+		known_costs = [sys.maxsize for i in range(len(graph))]
+		# reaching the start nodes costs nothing
+		for f, node in fringe:
+			known_costs[node.id_] = self.client['timeAvail']
 		return known_costs
 
 
