@@ -91,25 +91,27 @@ class Graph:
 				if relgraph.nodes[current_node].neigh[current_edge].neighbour(relgraph.nodes[current_node]) not in neighbour_list:
 					neighbour_list.append(relgraph.nodes[current_node].neigh[current_edge].neighbour(relgraph.nodes[current_node]))
 
-			optimal_edges= list()
-			#find out what are the optimal edges
-			for neighby in neighbour_list:
-				for edgy in relgraph.nodes[current_node].neigh:
-					#if this points to the neighbour start here
-					if neighby == edgy.neighbour(relgraph.nodes[current_node]):
-						edge_aux= edgy
 
-				for edgy in relgraph.nodes[current_node].neigh:
-					if edgy.info.price < edge_aux.info.price:
-						edge_aux= edgy
+			optimal_edges= list()
+			for neigh in neighbour_list:
+				#find the first edge that points to this neighbour
+				for edge in relgraph.nodes[current_node].neigh:
+					#if this edge points to this neighbour store it in edge_aux
+					if edge.neighbour(relgraph.nodes[current_node]) == neigh:
+						edge_aux= edge	#auxiliar variable to find the optimal edge
+						break
+
+				#find the optimal edge for neighbour neigh
+				for edge in relgraph.nodes[current_node].neigh:
+					#if the edge leads to neigh and if its price is inferior to the edge_aux, store it in edge_aux (auxiliar variable)
+					if edge.neighbour(relgraph.nodes[current_node]) == neigh and edge.info.price < edge_aux.info.price:
+						edge_aux=edge
 
 				optimal_edges.append(edge_aux)
 
 			#remove all edges from the current node to add the optimal right next
 			while len(relgraph.nodes[current_node].neigh) > 0:
 				relgraph.removeEdge(relgraph.nodes[current_node].neigh[0])
-
-
 
 			for edgy in optimal_edges:
 				relgraph.addEdge(edgy)
@@ -127,25 +129,27 @@ class Graph:
 				if relgraph.nodes[current_node].neigh[current_edge].neighbour(relgraph.nodes[current_node]) not in neighbour_list:
 					neighbour_list.append(relgraph.nodes[current_node].neigh[current_edge].neighbour(relgraph.nodes[current_node]))
 
-			optimal_edges= list()
-			#find out what are the optimal edges
-			for neighby in neighbour_list:
-				for edgy in relgraph.nodes[current_node].neigh:
-					#if this points to the neighbour start here
-					if neighby == edgy.neighbour(relgraph.nodes[current_node]):
-						edge_aux= edgy
 
-				for edgy in relgraph.nodes[current_node].neigh:
-					if edgy.info.duration < edge_aux.info.duration:
-						edge_aux= edgy
+			optimal_edges= list()
+			for neigh in neighbour_list:
+				#find the first edge that points to this neighbour
+				for edge in relgraph.nodes[current_node].neigh:
+					#if this edge points to this neighbour store it in edge_aux
+					if edge.neighbour(relgraph.nodes[current_node]) == neigh:
+						edge_aux= edge	#auxiliar variable to find the optimal edge
+						break
+
+				#find the optimal edge for neighbour neigh
+				for edge in relgraph.nodes[current_node].neigh:
+					#if the edge leads to neigh and if its price is inferior to the edge_aux, store it in edge_aux (auxiliar variable)
+					if edge.neighbour(relgraph.nodes[current_node]) == neigh and edge.info.duration < edge_aux.info.duration:
+						edge_aux=edge
 
 				optimal_edges.append(edge_aux)
 
 			#remove all edges from the current node to add the optimal right next
 			while len(relgraph.nodes[current_node].neigh) > 0:
 				relgraph.removeEdge(relgraph.nodes[current_node].neigh[0])
-
-
 
 			for edgy in optimal_edges:
 				relgraph.addEdge(edgy)
