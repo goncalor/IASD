@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
 	clients_list = iofiles.read_client_list(args.requests)
 
-	#pprint(clients_list)
+	pprint(clients_list)
 
 
 	client_no = 0

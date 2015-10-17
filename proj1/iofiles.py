@@ -52,7 +52,11 @@ def read_client_list(filename):
 
 		for constr in ['A1', 'A2', 'A3', 'B1', 'B2']:
 			if constr in l:
-				d[constr] = l[l.index(constr) + 1]
+				#if constraint can be converted to int
+				if l[l.index(constr) + 1].isdigit():
+					d[constr] = int(l[l.index(constr) + 1])
+				else:
+					d[constr] = l[l.index(constr) + 1]
 
 		clients.append(d)
 
