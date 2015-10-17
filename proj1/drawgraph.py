@@ -43,13 +43,13 @@ def draw_graph(graph):
 		G.add_edge(edge.nodeA.id_, edge.nodeB.id_)
 
 		labels[(edge.nodeA.id_, edge.nodeB.id_)] = (edge.info.price,
-		edge.info.duration, edge.info.transType)
+				edge.info.duration, edge.info.transType)
 
 
 
 	#pos = nx.circular_layout(G)
-	pos = nx.spring_layout(G)
-	#pos = nx.shell_layout(G)
+	#pos = nx.spring_layout(G)
+	pos = nx.shell_layout(G)
 
 	nx.draw_networkx_nodes(G, pos, node_color = "w")
 	nx.draw_networkx_edges(G, pos, edge_color = "k")
@@ -61,6 +61,7 @@ check_args()
 loadgraph()
 draw_graph(graph)
 
+plt.axis('off')
 plt.savefig(sys.argv[1] + ".png")
 if not no_show:
 	plt.show()
