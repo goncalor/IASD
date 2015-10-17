@@ -10,19 +10,30 @@ class SearchCriteria:
 		elif client['criterion'] == 'custo':
 			self.edgecost = self.__price_edgecost
 
+		#self.client_info = client
 		#self.remove = self.remove
 		#self.expand = self.expand
 		#self.isgoal = self.isgoal
 		#self.path = self.path
 
 
-	def __time_edgecost(self, edge):
+	def __time_edgecost(self, edge, curr_time):
+		time_today = curr_time % 1440
 
-		#TODO complete this!
-		return edge.info.duration
+		# normal waiting time
+		waiting_time = edge.info.period - time_today % edge.info.period
+
+		# when there are no more transports today
+		if time_today + waiting_time > edge.info.tf:
+			waiting_time = 1440 - time_today + edge.info.ti
+		# when before first departure
+		elif time_today < edge.info.ti:
+			waiting_time = edge.info.ti - time_today
+
+		return waiting_time
 
 
-	def __price_edgecost(self, edge):
+	def __price_edgecost(self, edge, ignored=None):
 		return edge.info.price
 
 
@@ -49,7 +60,10 @@ class SearchCriteria:
 		while node != start.id_:
 			path.append(parents[node])
 			node = parents[node][0]
-		return path + [(start.id_, None)]
+
+		path += [(start.id_, None)]
+		path.reverse()
+		return path
 
 
 	def expand(self, curr, fringe, parents, known_costs):
@@ -58,7 +72,8 @@ class SearchCriteria:
 			neigh = edge.neighbour(curr)
 
 			# the cost of the neighbour is this curr's cost plus the edge cost
-			neigh_known_cost = known_costs[curr.id_] + self.edgecost(edge)
+			neigh_known_cost = known_costs[curr.id_] + self.edgecost(edge,
+					known_costs[curr.id_])
 			#heur = heuristic(relaxed_graph, neigh, goal)
 			heur = 0
 
