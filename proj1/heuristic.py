@@ -2,7 +2,7 @@ __author__ = 'Henrique'
 
 from operator import attrgetter
 
-import graph
+from graph import Graph
 import sys
 from node import Node
 from edge import Edge
@@ -13,13 +13,13 @@ class Heuristic:
     heurType=''         # price or duration
     relGraph= None      # graph
 
-    def __init__(self, graphy, cost_type):
+    def __init__(self, graph, cost_type):
         """
         :param graph: graph with no useless transport
         :param key: which key to optimize, price or duration
         :return:
         """
-        if not isinstance(graphy, graph.Graph):
+        if not isinstance(graph, Graph):
             print('ERROR-> Heuristic construtor: graphy must be of type Graph')
             return
 
@@ -27,12 +27,16 @@ class Heuristic:
             print('ERROR-> Heuristic construtor: cost_type must be "price" or "duration"')
             return
 
-        heurType= cost_type
+        self.heurType= cost_type
 
         if cost_type == 'price':
-            self.relGraph= graphy.relax_price()
+            self.relGraph= graph.relax_price()
         else:
-            self.relGraph= graphy.relax_duration()
+            self.relGraph= graph.relax_duration()
+
+        for node in self.relGraph.nodes:
+            #node.info= float("inf")
+            node.info = sys.maxsize
 
     def heurIST_it(self, startNody, goalNody):
         """
@@ -48,14 +52,18 @@ class Heuristic:
             print('ERROR-> heurIST_it(): goalNody must be of type Node')
             return
 
+        startNody= self.relGraph.nodes[startNody.id_]
+        goalNody= self.relGraph.nodes[goalNody.id_]
+
+
         fringe = list()
 
         fringe.append((0, startNody))
 
-        #make this general
-        for nody in self.relGraph.nodes:
-            nody.info = sys.maxsize
+        #initialize all
+
         startNody.info = 0
+
 
         while len(fringe) != 0:
             curr = self.__remove(fringe)
@@ -63,19 +71,19 @@ class Heuristic:
             print('heurist_it curr.id_', curr.id_)
 
             if self.__isgoal(curr, goalNody):
-                return "found you"
+                return goalNody.info
 
             self.__expand(fringe, curr)
 
         return sys.maxsize
 
-    def __isgoal(self, nody, goal):
+    def __isgoal(self, node, goal):
         """
         :param nody: current node
         :param goal: goal node
         :return:
         """
-        if nody == goal:
+        if node == goal:
             return True
         else:
             return False
@@ -83,20 +91,24 @@ class Heuristic:
 
     def __expand(self, fringe, curr):
 
-        for edgy in curr.neigh:
-            neighby = edgy.neighbour(curr)
+        #for each edge in the neighbours of the node we are expanding
+        for edge in curr.neigh:
+            neigh = edge.neighbour(curr)
 
-            aux= 'info.' + self.heurType
-            cost = curr.info + getattr(edgy, 'info.' + self.heurType)
+            #the new cost of the neighbour is the current node cost plus the
+            cost = curr.info + getattr(edge.info, self.heurType)
 
-            if neighby.info > cost:
-                neighby.info = cost
-                fringe.append((cost, neighby))
+
+
+            if neigh.info > cost:
+                print('node ', neigh, 'neigh cost ', cost)
+                neigh.info = cost
+                fringe.append((cost, neigh))
 
         # "Sorts are guaranteed to be stable."
         fringe.sort(key=lambda tup: tup[0], reverse=True)
 
-        print([(item[1].id_, item[0]) for item in fringe])
+        #print([(item[1].id_, item[0]) for item in fringe])
 
     def __remove(self, fringe):
         """ Returns only the node from the (f, node) tuple """
