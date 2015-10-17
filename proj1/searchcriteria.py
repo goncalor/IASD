@@ -5,12 +5,10 @@ class SearchCriteria:
 	def __init__(self, client):
 
 		# define how the cost to reach the next node is calculated
-		if client['criterion'] == 'tempo':
-			self.edgecost = self.__time_edgecost
-			self.initcosts = self.__time_initcosts
-		elif client['criterion'] == 'custo':
-			self.edgecost = self.__price_edgecost
-			self.initcosts = self.__price_initcosts
+		#if client['criterion'] == 'tempo':
+		#	self.edgecost = self.__time_edgecost
+		#elif client['criterion'] == 'custo':
+		#	self.edgecost = self.__price_edgecost
 
 		self.client = client
 		#self.remove = self.remove
@@ -35,7 +33,7 @@ class SearchCriteria:
 		return waiting_time + edge.info.duration
 
 
-	def __price_edgecost(self, edge, ignored=None):
+	def __price_edgecost(self, edge):
 		return edge.info.price
 
 
@@ -48,18 +46,11 @@ class SearchCriteria:
 		return [(None, None) for i in range(len(graph))]
 
 
-	def __price_initcosts(self, graph, fringe):
-		known_costs = [sys.maxsize for i in range(len(graph))]
+	def initcosts(self, graph, fringe):
+		known_costs = [(sys.maxsize, sys.maxsize) for i in range(len(graph))]
 		for f, node in fringe:
-			known_costs[node.id_] = 0	# reaching the start nodes costs nothing
-		return known_costs
-
-
-	def __time_initcosts(self, graph, fringe):
-		known_costs = [sys.maxsize for i in range(len(graph))]
-		# reaching the start nodes costs nothing
-		for f, node in fringe:
-			known_costs[node.id_] = self.client['timeAvail']
+			# (duration, price)
+			known_costs[node.id_] = (self.client['timeAvail'], 0)	# reaching the start nodes costs nothing
 		return known_costs
 
 
@@ -90,25 +81,35 @@ class SearchCriteria:
 			neigh = edge.neighbour(curr)
 
 			# the cost of the neighbour is this curr's cost plus the edge cost
-			neigh_known_cost = known_costs[curr.id_] + self.edgecost(edge,
-					known_costs[curr.id_])
+			neigh_known_cost_duration = known_costs[curr.id_][0] + self.__time_edgecost(edge,
+				known_costs[curr.id_][0])
+			neigh_known_cost_price = known_costs[curr.id_][1] + self.__price_edgecost(edge)
+
+			if self.client['criterion'] == 'tempo':
+				neigh_known_cost = neigh_known_cost_duration
+				a = known_costs[neigh.id_][0]
+			else: 
+				neigh_known_cost = neigh_known_cost_price
+				a = known_costs[neigh.id_][1]
+
 			#heur = heuristic(relaxed_graph, neigh, goal)
 			heur = 0
 
 			# if a new best path was found to neigh
-			if known_costs[neigh.id_] > neigh_known_cost + heur:
+			if a + heur > neigh_known_cost + heur:
 				# update the cost to reach neigh
-				known_costs[neigh.id_] = neigh_known_cost
-				# add neigh to the fringe
+				known_costs[neigh.id_] = (neigh_known_cost_duration,
+						neigh_known_cost_price)
+				# add neigh to the fringe (f, neighbour)
 				fringe.append((neigh_known_cost + heur, neigh))
-				# update neigh's parent
+				# update neigh's parent (id, transport type)
 				parents[neigh.id_] = (curr.id_, edge.info.transType)
 
 		# "Sorts are guaranteed to be stable."
 		fringe.sort(key=lambda tup: tup[0], reverse=True)
 
 		# (id, cost)
-		#print([(item[1].id_, item[0]) for item in fringe])
+		#print("expanded (id, cost)", [(item[1].id_, item[0]) for item in fringe])
 		
 
 	def isgoal(self, node, goal):
