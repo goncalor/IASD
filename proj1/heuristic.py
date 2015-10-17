@@ -68,8 +68,6 @@ class Heuristic:
         while len(fringe) != 0:
             curr = self.__remove(fringe)
 
-            print('heurist_it curr.id_', curr.id_)
-
             if self.__isgoal(curr, goalNody):
                 return goalNody.info
 
@@ -101,7 +99,6 @@ class Heuristic:
 
 
             if neigh.info > cost:
-                print('node ', neigh, 'neigh cost ', cost)
                 neigh.info = cost
                 fringe.append((cost, neigh))
 
