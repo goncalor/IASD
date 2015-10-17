@@ -4,31 +4,49 @@ import edge
 import node
 import edgeinfo
 from copy import deepcopy
+import heuristic
+import sys
 
-mygraph= graph.Graph(2+1)
+mygraph= graph.Graph(6+1)
 
 #http://www.csse.monash.edu.au/~lloyd/tildeAlgDS/Graph/PICS/WtUndMST5.gif
-info= edgeinfo.EdgeInfo( 0, 3, 10,100, 200, 50)
+#duration price
+info= edgeinfo.EdgeInfo( 0, 3, 4, 100, 200, 50)
+mygraph.addEdge(1, 4, info)
+info= edgeinfo.EdgeInfo( 0, 4, 5, 100, 200, 50)
+mygraph.addEdge(2, 4, info)
+info= edgeinfo.EdgeInfo( 0, 4, 5, 100, 200, 50)
+mygraph.addEdge(2, 5, info)
+
+
+info= edgeinfo.EdgeInfo( 0, 4, 5, 100, 200, 50)
 mygraph.addEdge(1, 2, info)
-info= edgeinfo.EdgeInfo( 0, 2, 15, 100, 200, 50)
+info= edgeinfo.EdgeInfo( 0, 20, 21, 100, 200, 50)
 mygraph.addEdge(1, 2, info)
-
-info= edgeinfo.EdgeInfo( 0, 4, 20, 100, 200, 50)
-new_edge= edge.Edge(mygraph.nodes[1], mygraph.nodes[2], info)
-
-mygraph.addEdge(new_edge)
-
+info= edgeinfo.EdgeInfo( 0, 3, 4, 100, 200, 50)
+mygraph.addEdge(2, 3, info)
+info= edgeinfo.EdgeInfo( 0, 2, 3, 100, 200, 50)
+mygraph.addEdge(3, 4, info)
+info= edgeinfo.EdgeInfo( 0, 3, 4, 100, 200, 50)
+mygraph.addEdge(4, 5, info)
+info= edgeinfo.EdgeInfo( 0, 1, 2, 100, 200, 50)
+mygraph.addEdge(5, 6, info)
+info= edgeinfo.EdgeInfo( 0, 5, 6, 100, 200, 50)
+mygraph.addEdge(6, 1, info)
 
 
 print('ola\n')
 
 print(mygraph)
 
-relprice= mygraph.relax_price()
-print('relprice\n', relprice, relprice.edges[0].info.price)
+myheuristic= heuristic.Heuristic(mygraph, 'duration')
 
-relduration= mygraph.relax_duration()
-print('relduration\n', relduration, relduration.edges[0].info.duration)
+
+start=3
+goal=6
+print(myheuristic.heurIST_it(mygraph.nodes[start], mygraph.nodes[goal]))
+
+
 
 
 
