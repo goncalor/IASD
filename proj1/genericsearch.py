@@ -13,11 +13,11 @@ def generic_search(graph, start_node, goal, initparents, initcosts, initfringe,
 	while fringe:
 		curr = remove(fringe)
 
-		print(curr.id_)
-		print("path", path(start_node, curr, parents))
+		#print(curr.id_)
+		#print("path", path(start_node, curr, parents))
 
 		if isgoal(curr, goal):
-			return path(start_node, goal, parents)
+			return path(start_node, goal, parents, known_costs)
 		expand(curr, fringe, parents, known_costs)
 
 	# no path found

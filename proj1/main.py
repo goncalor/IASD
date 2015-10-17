@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 if __name__ == "__main__":
 
-	print('Creating graph... ', end='')
+	print('Creating graph... ', end = '')
 	graph = iofiles.newGraph(args.map)
 	print('Done.')
 
@@ -23,7 +23,10 @@ if __name__ == "__main__":
 
 	clients_list = iofiles.read_client_list(args.requests)
 
-	pprint(clients_list)
+	# debug
+	for client in clients_list:
+		print(client)
+	#
 
 
 	for client in clients_list:
