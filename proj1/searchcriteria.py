@@ -1,3 +1,4 @@
+import sys
 
 class SearchCriteria:
 
@@ -27,6 +28,18 @@ class SearchCriteria:
 
 	def initfringe(self, start_node):
 		return [(0, start_node)]
+
+
+	def initparents(self, graph):
+		# save the node id and the transportation type
+		return [(None, None) for i in range(len(graph))]
+
+
+	def initcosts(self, graph, fringe):
+		known_costs = [sys.maxsize for i in range(len(graph))]
+		for f, node in fringe:
+			known_costs[node.id_] = 0	# reaching the start nodes costs nothing
+		return known_costs
 
 
 	def path(self, start, goal, parents):
