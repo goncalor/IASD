@@ -3,9 +3,11 @@ import sys
 def generic_search(graph, start_node, goal, initparents, initcosts, initfringe,
 		remove, expand, isgoal, path):
 
-	#initialise the fringe
+	# initialise the fringe
 	fringe = initfringe(start_node)
+	# for each node there should be no parents
 	parents = initparents(graph)
+	# known costs should be infinite
 	known_costs = initcosts(graph, fringe)
 
 	while fringe:

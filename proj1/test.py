@@ -39,16 +39,7 @@ print('ola\n')
 
 print(mygraph)
 
-
-
-grafo_sem_avioes= mygraph.removeEdges('transType', 'aviao')
-
-print(grafo_sem_avioes)
-
-print('edges sem avioes', len(grafo_sem_avioes.edges))
-
-for node in grafo_sem_avioes.nodes:
-    print('node', node.id_, node.neigh)
+print(mygraph.edges[0].info.transType)
 
 
 

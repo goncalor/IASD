@@ -44,7 +44,7 @@ class SearchCriteria:
 
 
 	def initparents(self, graph):
-		# save the node id and the transportation type
+		# save (node id, transportation type)
 		return [(None, None) for i in range(len(graph))]
 
 

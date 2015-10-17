@@ -26,13 +26,13 @@ if __name__ == "__main__":
 	pprint(clients_list)
 
 
-	client_no = 0
-	sc = SearchCriteria(clients_list[client_no])
+	for client in clients_list:
+		sc = SearchCriteria(client)
 
-	ans = genericsearch.generic_search(graph,
-			graph.nodes[clients_list[client_no]['from']],
-			graph.nodes[clients_list[client_no]['to']], sc. initparents,
-			sc.initcosts, sc.initfringe, sc.remove, sc.expand, sc.isgoal,
-			sc.path)
+		ans = genericsearch.generic_search(graph,
+				graph.nodes[client['from']],
+				graph.nodes[client['to']], sc.initparents,
+				sc.initcosts, sc.initfringe, sc.remove, sc.expand, sc.isgoal,
+				sc.path)
 
-	print(ans)
+		print(ans)
