@@ -34,3 +34,6 @@ class Transport:
 
     def __str__(self):
         return Transport.__trans_invDictionary[self.trans]
+
+    def __repr__(self):
+        return Transport.__trans_invDictionary[self.trans]

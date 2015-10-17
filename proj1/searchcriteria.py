@@ -99,6 +99,7 @@ class SearchCriteria:
 		# "Sorts are guaranteed to be stable."
 		fringe.sort(key=lambda tup: tup[0], reverse=True)
 
+		# (id, cost)
 		print([(item[1].id_, item[0]) for item in fringe])
 		
 
