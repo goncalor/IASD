@@ -32,6 +32,6 @@ if __name__ == "__main__":
 	ans = genericsearch.generic_search(graph,
 			graph.nodes[clients_list[client_no]['from']],
 			graph.nodes[clients_list[client_no]['to']],
-			sc.remove, sc.expand, sc.isgoal, sc.path)
+			sc.initfringe, sc.remove, sc.expand, sc.isgoal, sc.path)
 
 	print(ans)

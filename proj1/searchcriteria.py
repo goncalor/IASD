@@ -2,11 +2,31 @@
 class SearchCriteria:
 
 	def __init__(self, client):
+
+		# define how the cost to reach the next node is calculated
+		if client['criterion'] == 'tempo':
+			self.edgecost = self.__time_edgecost
+		elif client['criterion'] == 'custo':
+			self.edgecost = self.__price_edgecost
+
 		#self.remove = self.remove
 		#self.expand = self.expand
 		#self.isgoal = self.isgoal
 		#self.path = self.path
-		pass
+
+
+	def __time_edgecost(self, edge):
+
+		#TODO complete this!
+		return edge.info.duration
+
+
+	def __price_edgecost(self, edge):
+		return edge.info.price
+
+
+	def initfringe(self, start_node):
+		return [(0, start_node)]
 
 
 	def path(self, start, goal, parents):
@@ -25,7 +45,7 @@ class SearchCriteria:
 			neigh = edge.neighbour(curr)
 
 			# the cost of the neighbour is this curr's cost plus the edge cost
-			neigh_known_cost = known_costs[curr.id_] + edge.info.price
+			neigh_known_cost = known_costs[curr.id_] + self.edgecost(edge)
 			#heur = heuristic(relaxed_graph, neigh, goal)
 			heur = 0
 
