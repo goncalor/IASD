@@ -3,10 +3,6 @@ import edge
 
 class Node:
 
-	neigh = []	# neighbours of this node
-	id_ = None
-	info = None
-
 	def __init__(self, id_, info=None):
 		self.id_ = id_
 		self.neigh= []
