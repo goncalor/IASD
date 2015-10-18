@@ -36,9 +36,6 @@ class Heuristic:
         else:
             self.relGraph= graph.relax_duration()
 
-        for node in self.relGraph.nodes:
-            node.info = sys.maxsize
-
         self.heurValues= list()
         for node_id in range(len(self.relGraph.nodes)):
             self.heurValues.append(None)
@@ -79,10 +76,18 @@ class Heuristic:
             curr = self.__remove(fringe)
 
             if self.__isgoal(curr, goalNode):
-                # TODO create memory for the heuritic. dont forget to consult memory before generating a new value
+                # TODO create memory for the heuristic. don't forget to consult memory before generating a new value
 
                 self.heurValues[startNode.id_]= goalNode.info
                 return goalNode.info
+
+            # if we found a node with heuristic value calculate the heuristic to it and sum it to it's heurValue
+            #it is assumed that
+            if self.heurValues[curr.id_] != None:
+                heur = self.heurIST_it(startNode_id, curr.id_)
+                self.heurValues[startNode_id]= heur + self.heurValues[curr.id_]
+
+                return self.heurValues[startNode_id]
 
             self.__expand(fringe, curr)
         else:

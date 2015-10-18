@@ -77,6 +77,7 @@ if __name__ == "__main__":
 				cliGraph.nodes[client['to']], sc.initparents,
 				sc.initcosts, sc.initfringe, sc.remove, sc.expand, sc.isgoal, sc.path)
 
+
 		print(client['criterion'], "\t", client['clientNr'], ans)
 
 	print("\ntotal time:", time.time() - start_time)
