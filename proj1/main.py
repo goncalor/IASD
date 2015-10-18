@@ -34,6 +34,10 @@ if __name__ == "__main__":
 		print(client['clientNr'], client['criterion'], client)
 	#
 
+	sols = []
+
+	print('Computing paths... ', end = '')
+
 	# measure time
 	start_time = time.time()
 
@@ -72,6 +76,15 @@ if __name__ == "__main__":
 				sc.initcosts, sc.initfringe, sc.remove, sc.expand, sc.isgoal,
 				sc.path)
 
+		sols.append('{} {}'.format(client['clientNr'], ans))
+
 		print(client['criterion'], "\t", client['clientNr'], ans)
+
+	print('Done.')
+
+	# write solutions to a file
+	print('Preserving solutions... ', end = '')
+	iofiles.write_sol(args.requests, sols)
+	print('Done.')
 
 	print("\ntotal time:", time.time() - start_time)

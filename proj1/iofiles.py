@@ -29,6 +29,7 @@ def newGraph(filename):
 				EdgeInfo(transType, int(duration), int(price), \
 						int(ti), int(tf), int(period)))
 
+	f.close()
 	return network
 
 
@@ -60,4 +61,14 @@ def read_client_list(filename):
 
 		clients.append(d)
 
+	f.close()
 	return clients
+
+
+def write_sol(filename, solutions):
+	""" 'filename' is the file name of the .cli file """
+
+	filename = filename[:filename.rindex('.')] + ".sol"
+
+	with open(filename, 'w') as f:
+		f.write("\n".join(map(lambda x: str(x), solutions)) + '\n')
