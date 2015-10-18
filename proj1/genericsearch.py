@@ -11,11 +11,13 @@ def generic_search(graph, start_node, goal, initparents, initcosts, initfringe,
 	known_costs = initcosts(graph, fringe)
 
 	while fringe:
+		"""
 		# debug
 		print('iter')
 		for cena in fringe:
 			print(cena[0], cena[1].id_)
 		#
+		"""
 
 		curr = remove(fringe)
 

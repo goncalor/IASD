@@ -21,7 +21,8 @@ class SearchCriteria:
 		time_today = curr_time % 1440
 
 		# normal waiting time
-		waiting_time = edge.info.period - time_today % edge.info.period
+		# remaining time to next transport
+		waiting_time = (time_today - edge.info.ti) % edge.info.period
 
 		# when there are no more transports today
 		if time_today + waiting_time > edge.info.tf:
@@ -77,7 +78,7 @@ class SearchCriteria:
 		for item in path[:-1]:
 			s += '{} {} '.format(item[0], item[1])
 		else:
-			s += '{} {} {}'.format(goal.id_, *known_costs[goal.id_])
+			s += '{} {} {}'.format(goal.id_, known_costs[goal.id_][0]-self.client['timeAvail'], known_costs[goal.id_][1])
 
 		return s
 
