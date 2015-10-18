@@ -21,19 +21,23 @@ if __name__ == "__main__":
 	graph = iofiles.newGraph(args.map)
 	print('Done.')
 
+	"""
+	#debug
 	print(graph)
 
-	# debug
 	print('all edges')
 	for edge in graph.edges:
 		print(edge.info.transType, edge, 'duration', edge.info.duration, 'ti', edge.info.ti, 'period', edge.info.period)
-
+	#
+	"""
 	clients_list = iofiles.read_client_list(args.requests)
 
+	"""
 	# debug
 	for client in clients_list:
 		print(client['clientNr'], client['criterion'], client)
 	#
+	"""
 
 	# measure time
 	start_time = time.time()

@@ -37,8 +37,12 @@ class Heuristic:
             self.relGraph= graph.relax_duration()
 
         for node in self.relGraph.nodes:
-            #node.info= float("inf")
             node.info = sys.maxsize
+
+        self.heurValues= list()
+        for node_id in range(len(self.relGraph.nodes)):
+            self.heurValues.append(None)
+
 
     def heurIST_it(self, startNode_id, goalNode_id):
         """
@@ -46,41 +50,45 @@ class Heuristic:
         :param goalNode_id: goal node
         :return: int heuristic value
         """
-        # TODO remove when it's all over
-        """
-        if not isinstance(startNody, Node):
-            print('ERROR-> heurIST_it(): startNody must be of type Node')
-            return
 
-        if not isinstance(goalNody, Node):
-            print('ERROR-> heurIST_it(): goalNody must be of type Node')
-            return
-        """
+        #if the value is already calculated, return it instead of recalculating it
+        if self.heurValues[startNode_id] != None:
+            # debug
+            #print('ja calculado', startNode_id, self.heurValues[startNode_id])
+            #
+            return self.heurValues[startNode_id]
+        #debug
+        else:
+            startNode_id=startNode_id
+            #print('a calcular', startNode_id)
+        #
 
-        startNode_id= self.relGraph.nodes[startNode_id]
-        goalNode_id= self.relGraph.nodes[goalNode_id]
-
-
-        fringe = list()
-
-        fringe.append((0, startNode_id))
+        startNode= self.relGraph.nodes[startNode_id]
+        goalNode= self.relGraph.nodes[goalNode_id]
 
         #initialize all
+        for node in self.relGraph.nodes:
+            node.info= sys.maxsize
 
-        startNode_id.info = 0
+        fringe = list()
+        fringe.append((0, startNode))
 
+        startNode.info = 0
 
-        while len(fringe) != 0:
+        while fringe:
             curr = self.__remove(fringe)
 
-            if self.__isgoal(curr, goalNode_id):
+            if self.__isgoal(curr, goalNode):
                 # TODO create memory for the heuritic. dont forget to consult memory before generating a new value
 
-                return goalNode_id.info
+                self.heurValues[startNode.id_]= goalNode.info
+                return goalNode.info
 
             self.__expand(fringe, curr)
+        else:
+            self.heurValues[startNode.id_]= sys.maxsize
+            return sys.maxsize
 
-        return sys.maxsize
 
     def __isgoal(self, node, goal):
         """
