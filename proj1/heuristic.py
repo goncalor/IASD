@@ -65,7 +65,7 @@ class Heuristic:
         startNode= self.relGraph.nodes[startNode_id]
         goalNode= self.relGraph.nodes[goalNode_id]
 
-        #initialize all
+        # initialize all
         for node in self.relGraph.nodes:
             # (cost value, parent)
             node.info= (sys.maxsize, None)
@@ -79,8 +79,6 @@ class Heuristic:
             curr = self.__remove(fringe)
 
             if self.__isgoal(curr, goalNode):
-
-                # TODO save all discovered heuristics
                 nodeList= list()
                 heurList= list()
 
