@@ -42,10 +42,16 @@ def draw_graph(graph):
 	for edge in graph.edges:
 		G.add_edge(edge.nodeA.id_, edge.nodeB.id_)
 
-		labels[(edge.nodeA.id_, edge.nodeB.id_)] = (edge.info.price,
-				edge.info.duration, edge.info.transType)
-
-
+	if "d" in sys.argv:
+		print("duration")
+		for edge in graph.edges:
+			labels[(edge.nodeA.id_, edge.nodeB.id_)] = (edge.info.duration, edge.info.ti,
+					edge.info.period, edge.info.tf, str(edge.info.transType)[:3])
+	elif "p" in sys.argv:
+		print("price")
+		for edge in graph.edges:
+			labels[(edge.nodeA.id_, edge.nodeB.id_)] = (edge.info.price,
+					str(edge.info.transType)[:3])
 
 	#pos = nx.circular_layout(G)
 	#pos = nx.spring_layout(G)
