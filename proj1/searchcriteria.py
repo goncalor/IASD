@@ -2,8 +2,9 @@ import sys
 
 class SearchCriteria:
 
-	def __init__(self, client):
+	def __init__(self, client, heuristic):
 		self.client = client
+		self.heuristic = heuristic
 
 		# restriction is the worst value the optimization criteria can have
 		if 'B1' in client:
@@ -105,12 +106,11 @@ class SearchCriteria:
 			if self.client['criterion'] == 'tempo':
 				new_neigh_known_cost = neigh_known_cost_duration
 				old_neigh_known_cost = known_costs[neigh.id_][0]
-			else: 
+			else:
 				new_neigh_known_cost = neigh_known_cost_price
 				old_neigh_known_cost = known_costs[neigh.id_][1]
 
-			#heur = heuristic(relaxed_graph, neigh, goal)
-			heur = 0
+			heur = self.heuristic(self.client['from'], self.client['to'])
 
 			# if a new best path was found to neigh
 			if old_neigh_known_cost + heur > new_neigh_known_cost + heur:
@@ -137,7 +137,7 @@ class SearchCriteria:
 
 		# (id, cost)
 		#print("expanded (id, cost)", [(item[1].id_, item[0]) for item in fringe])
-		
+
 
 	def isgoal(self, node, goal):
 		if node == goal:
