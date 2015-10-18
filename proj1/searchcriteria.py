@@ -22,14 +22,24 @@ class SearchCriteria:
 
 		# normal waiting time
 		# remaining time to next transport
-		waiting_time = (time_today - edge.info.ti) % edge.info.period
+		# 	waiting is the duration of a period minus the time of the period that has already passed
+		waiting_time = edge.info.period - (time_today - edge.info.ti) % edge.info.period
+		#if it is the period, it means we are right on time
+		if waiting_time == edge.info.period:
+			waiting_time = 0
 
-		# when there are no more transports today
+		# 	when there are no more transports today
 		if time_today + waiting_time > edge.info.tf:
 			waiting_time = 1440 - time_today + edge.info.ti
 		# when before first departure
 		elif time_today < edge.info.ti:
 			waiting_time = edge.info.ti - time_today
+
+		"""
+		# debug
+		print(curr_time, "\t", edge.info.transType, edge, 'wait', waiting_time, 'time', time_today, 'period', edge.info.period)
+		#
+		"""
 
 		return waiting_time + edge.info.duration
 
