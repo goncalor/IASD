@@ -60,6 +60,9 @@ class SearchCriteria:
 		total_time=0
 		total_cost=0
 
+		if parents[goal.id_][0] == None:
+			return '-1'
+
 		path.append((goal.id_, None))
 
 		# find the start from the end to build the path
@@ -77,10 +80,8 @@ class SearchCriteria:
 			s += '{} {} '.format(item[0], item[1])
 		else:
 			s += '{} {} {}'.format(goal.id_, *known_costs[goal.id_])
-			
-		print(s)
 
-		return path
+		return s
 
 
 	def expand(self, curr, fringe, parents, known_costs):
@@ -89,9 +90,11 @@ class SearchCriteria:
 			neigh = edge.neighbour(curr)
 
 			# the cost of the neighbour is this curr's cost plus the edge cost
-			neigh_known_cost_duration = known_costs[curr.id_][0] + self.__time_edgecost(edge,
-				known_costs[curr.id_][0])
-			neigh_known_cost_price = known_costs[curr.id_][1] + self.__price_edgecost(edge)
+			neigh_known_cost_duration = known_costs[curr.id_][0] +
+			self.__time_edgecost(edge, known_costs[curr.id_][0])
+
+			neigh_known_cost_price = known_costs[curr.id_][1] +
+			self.__price_edgecost(edge)
 
 			if self.client['criterion'] == 'tempo':
 				neigh_known_cost = neigh_known_cost_duration

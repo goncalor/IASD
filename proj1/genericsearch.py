@@ -21,5 +21,5 @@ def generic_search(graph, start_node, goal, initparents, initcosts, initfringe,
 		expand(curr, fringe, parents, known_costs)
 
 	# no path found
-	return []
+	return path(start_node, goal, parents, known_costs)
 
