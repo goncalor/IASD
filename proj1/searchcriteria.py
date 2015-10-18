@@ -3,18 +3,15 @@ import sys
 class SearchCriteria:
 
 	def __init__(self, client):
-
-		# define how the cost to reach the next node is calculated
-		#if client['criterion'] == 'tempo':
-		#	self.edgecost = self.__time_edgecost
-		#elif client['criterion'] == 'custo':
-		#	self.edgecost = self.__price_edgecost
-
 		self.client = client
-		#self.remove = self.remove
-		#self.expand = self.expand
-		#self.isgoal = self.isgoal
-		#self.path = self.path
+
+		# restriction is the worst value the optimization criteria can have
+		if 'B1' in client:
+			self.restriction = client['B1']
+		elif 'B2' in client:
+			self.restriction = client['B2']
+		else:
+			self.restriction = sys.maxsize
 
 
 	def __time_edgecost(self, edge, curr_time):
@@ -24,7 +21,7 @@ class SearchCriteria:
 		# remaining time to next transport
 		# 	waiting is the duration of a period minus the time of the period that has already passed
 		waiting_time = edge.info.period - (time_today - edge.info.ti) % edge.info.period
-		#if it is the period, it means we are right on time
+		# if it is the period, it means we are right on time
 		if waiting_time == edge.info.period:
 			waiting_time = 0
 
@@ -106,27 +103,37 @@ class SearchCriteria:
 			self.__price_edgecost(edge)
 
 			if self.client['criterion'] == 'tempo':
-				neigh_known_cost = neigh_known_cost_duration
-				a = known_costs[neigh.id_][0]
+				new_neigh_known_cost = neigh_known_cost_duration
+				old_neigh_known_cost = known_costs[neigh.id_][0]
 			else: 
-				neigh_known_cost = neigh_known_cost_price
-				a = known_costs[neigh.id_][1]
+				new_neigh_known_cost = neigh_known_cost_price
+				old_neigh_known_cost = known_costs[neigh.id_][1]
 
 			#heur = heuristic(relaxed_graph, neigh, goal)
 			heur = 0
 
 			# if a new best path was found to neigh
-			if a + heur > neigh_known_cost + heur:
+			if old_neigh_known_cost + heur > new_neigh_known_cost + heur:
 				# update the cost to reach neigh
 				known_costs[neigh.id_] = (neigh_known_cost_duration,
 						neigh_known_cost_price)
 				# add neigh to the fringe (f, neighbour)
-				fringe.append((neigh_known_cost + heur, neigh))
+				fringe.append((new_neigh_known_cost + heur, neigh))
 				# update neigh's parent (id, transport type)
 				parents[neigh.id_] = (curr.id_, edge.info.transType)
 
+		if not fringe:
+			return
+
 		# "Sorts are guaranteed to be stable."
 		fringe.sort(key=lambda tup: tup[0], reverse=True)
+
+		if self.client['criterion'] == 'tempo':
+			if known_costs[fringe[-1][1].id_][0] > self.restriction:
+				del fringe[:]
+		else:
+			if known_costs[fringe[-1][1].id_][1] > self.restriction:
+				del fringe[:]
 
 		# (id, cost)
 		#print("expanded (id, cost)", [(item[1].id_, item[0]) for item in fringe])

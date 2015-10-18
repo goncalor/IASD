@@ -5,6 +5,7 @@ from searchcriteria import SearchCriteria
 
 # other modules
 import argparse
+import time
 from pprint import pprint
 
 
@@ -32,6 +33,9 @@ if __name__ == "__main__":
 	for client in clients_list:
 		print(client['clientNr'], client['criterion'], client)
 	#
+
+	# measure time
+	start_time = time.time()
 
 	for client in clients_list:
 		sc = SearchCriteria(client)
@@ -68,4 +72,6 @@ if __name__ == "__main__":
 				sc.initcosts, sc.initfringe, sc.remove, sc.expand, sc.isgoal,
 				sc.path)
 
-		print(client['clientNr'], ans)
+		print(client['criterion'], "\t", client['clientNr'], ans)
+
+	print("\ntotal time:", time.time() - start_time)
