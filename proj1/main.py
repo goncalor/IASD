@@ -13,6 +13,7 @@ from pprint import pprint
 parser = argparse.ArgumentParser(description='Solves "travel agent" problems.')
 parser.add_argument('map', help='.map file defining the network')
 parser.add_argument('requests', help='.cli file defining clients\' requests')
+parser.add_argument('--no-heuristic', '-nh', action='store_true', help='use uninformed search')
 args = parser.parse_args()
 
 if __name__ == "__main__":
@@ -73,7 +74,11 @@ if __name__ == "__main__":
 		"""
 
 		heuristic= Heuristic(graph, client['criterion'])
-		sc = SearchCriteria(client, heuristic.heurIST_it)
+
+		if args.no_heuristic:
+			sc = SearchCriteria(client, lambda a, b: 0)
+		else:
+			sc = SearchCriteria(client, heuristic.heurIST_it)
 
 		ans = genericsearch.generic_search(
 				cliGraph,
@@ -93,3 +98,4 @@ if __name__ == "__main__":
 	print('Done.')
 
 	print("\ntotal time:", time.time() - start_time)
+
