@@ -110,7 +110,8 @@ class SearchCriteria:
 				new_neigh_known_cost = neigh_known_cost_price
 				old_neigh_known_cost = known_costs[neigh.id_][1]
 
-			heur = self.heuristic(self.client['from'], self.client['to'])
+			#print(self.client)
+			heur = self.heuristic(curr.id_, self.client['to'])
 
 			# if a new best path was found to neigh
 			if old_neigh_known_cost + heur > new_neigh_known_cost + heur:
