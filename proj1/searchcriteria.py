@@ -21,7 +21,8 @@ class SearchCriteria:
 		time_today = curr_time % 1440
 
 		# normal waiting time
-		waiting_time = edge.info.period - time_today % edge.info.period
+		# remaining time to next transport
+		waiting_time = (time_today - edge.info.ti) % edge.info.period
 
 		# when there are no more transports today
 		if time_today + waiting_time > edge.info.tf:
@@ -57,8 +58,6 @@ class SearchCriteria:
 	def path(self, start, goal, parents, known_costs):
 		path = []
 		node = goal.id_
-		total_time=0
-		total_cost=0
 
 		if parents[goal.id_][0] == None:
 			return '-1'
@@ -79,7 +78,7 @@ class SearchCriteria:
 		for item in path[:-1]:
 			s += '{} {} '.format(item[0], item[1])
 		else:
-			s += '{} {} {}'.format(goal.id_, *known_costs[goal.id_])
+			s += '{} {} {}'.format(goal.id_, known_costs[goal.id_][0]-self.client['timeAvail'], known_costs[goal.id_][1])
 
 		return s
 
@@ -90,10 +89,10 @@ class SearchCriteria:
 			neigh = edge.neighbour(curr)
 
 			# the cost of the neighbour is this curr's cost plus the edge cost
-			neigh_known_cost_duration = known_costs[curr.id_][0] +
+			neigh_known_cost_duration = known_costs[curr.id_][0] + \
 			self.__time_edgecost(edge, known_costs[curr.id_][0])
 
-			neigh_known_cost_price = known_costs[curr.id_][1] +
+			neigh_known_cost_price = known_costs[curr.id_][1] + \
 			self.__price_edgecost(edge)
 
 			if self.client['criterion'] == 'tempo':
