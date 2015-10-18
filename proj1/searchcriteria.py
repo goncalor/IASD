@@ -72,6 +72,14 @@ class SearchCriteria:
 
 		path.reverse()
 
+		s = ''
+		for item in path[:-1]:
+			s += '{} {} '.format(item[0], item[1])
+		else:
+			s += '{} {} {}'.format(goal.id_, *known_costs[goal.id_])
+			
+		print(s)
+
 		return path
 
 
