@@ -21,6 +21,11 @@ if __name__ == "__main__":
 
 	print(graph)
 
+	# debug
+	print('all edges')
+	for edge in graph.edges:
+		print(edge.info.transType, edge, 'duration', edge.info.duration, 'ti', edge.info.ti, 'period', edge.info.period)
+
 	clients_list = iofiles.read_client_list(args.requests)
 
 	# debug

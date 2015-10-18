@@ -57,8 +57,6 @@ class SearchCriteria:
 	def path(self, start, goal, parents, known_costs):
 		path = []
 		node = goal.id_
-		total_time=0
-		total_cost=0
 
 		if parents[goal.id_][0] == None:
 			return '-1'
@@ -90,10 +88,10 @@ class SearchCriteria:
 			neigh = edge.neighbour(curr)
 
 			# the cost of the neighbour is this curr's cost plus the edge cost
-			neigh_known_cost_duration = known_costs[curr.id_][0] +
+			neigh_known_cost_duration = known_costs[curr.id_][0] + \
 			self.__time_edgecost(edge, known_costs[curr.id_][0])
 
-			neigh_known_cost_price = known_costs[curr.id_][1] +
+			neigh_known_cost_price = known_costs[curr.id_][1] + \
 			self.__price_edgecost(edge)
 
 			if self.client['criterion'] == 'tempo':
