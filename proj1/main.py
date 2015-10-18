@@ -2,6 +2,7 @@
 import iofiles
 import genericsearch
 from searchcriteria import SearchCriteria
+from heuristic import Heuristic
 
 # other modules
 import argparse
@@ -38,7 +39,6 @@ if __name__ == "__main__":
 	start_time = time.time()
 
 	for client in clients_list:
-		sc = SearchCriteria(client)
 
 		# TODO remove copy, possibly
 		cliGraph= graph.deepcopy()
@@ -64,13 +64,14 @@ if __name__ == "__main__":
 		#
 		"""
 
+		heuristic= Heuristic(graph, client['criterion'])
+		sc = SearchCriteria(client, heuristic.heurIST_it)
 
 		ans = genericsearch.generic_search(
 				cliGraph,
 				cliGraph.nodes[client['from']],
 				cliGraph.nodes[client['to']], sc.initparents,
-				sc.initcosts, sc.initfringe, sc.remove, sc.expand, sc.isgoal,
-				sc.path)
+				sc.initcosts, sc.initfringe, sc.remove, sc.expand, sc.isgoal, sc.path)
 
 		print(client['criterion'], "\t", client['clientNr'], ans)
 
