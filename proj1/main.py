@@ -22,23 +22,7 @@ if __name__ == "__main__":
 	graph = iofiles.newGraph(args.map)
 	print('Done.')
 
-	"""
-	#debug
-	print(graph)
-
-	print('all edges')
-	for edge in graph.edges:
-		print(edge.info.transType, edge, 'duration', edge.info.duration, 'ti', edge.info.ti, 'period', edge.info.period)
-	#
-	"""
 	clients_list = iofiles.read_client_list(args.requests)
-
-	"""
-	# debug
-	for client in clients_list:
-		print(client['clientNr'], client['criterion'], client)
-	#
-	"""
 
 	sols = []
 
@@ -57,21 +41,6 @@ if __name__ == "__main__":
 			cliGraph = graph.removeEdges('duration', client['A2'])
 		elif 'A3' in client:
 			cliGraph = graph.removeEdges('price', client['A3'])
-			"""
-			# debug
-			print('===graph===')
-			print(graph)
-			print('===cliGraph===')
-			print(cliGraph)
-			break
-			#
-			"""
-		"""
-		# debug
-		for edge in cliGraph.edges:
-			print(edge.info.transType, edge, 'duration', edge.info.duration, 'ti', edge.info.ti, 'period', edge.info.period, 'tf', edge.info.tf)
-		#
-		"""
 
 		heuristic= Heuristic(graph, client['criterion'])
 
@@ -88,14 +57,7 @@ if __name__ == "__main__":
 
 		sols.append('{} {}'.format(client['clientNr'], ans))
 
-		""""
-		tmp = 0
-		for value in heuristic.heurValues:
-			print('heur', tmp, value)
-			tmp += 1
-		"""
-
-		print(client['criterion'], "\t", client['clientNr'], ans)
+		#print(client['criterion'], "\t", client['clientNr'], ans)
 
 	print('Done.')
 
