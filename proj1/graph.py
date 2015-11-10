@@ -85,7 +85,7 @@ class Graph:
 		return new_graph
 
 	def relax_price(self):
-		relgraph= deepcopy(self)
+		relgraph= self.deepcopy()
 
 		for current_node in range(1, len(relgraph.nodes)):
 
@@ -123,7 +123,7 @@ class Graph:
 		return relgraph
 
 	def relax_duration(self):
-		relgraph= deepcopy(self)
+		relgraph= self.deepcopy()
 
 		for current_node in range(1, len(relgraph.nodes)):
 
