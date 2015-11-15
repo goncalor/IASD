@@ -9,21 +9,21 @@ class CnfKb:
 
     def add_clause(self, cnf_sentence):
         if len(cnf_sentence) == 0:
-            print("ERROR: CnfKb add_clause: can't add an empty clause")
+            print("ERROR: CnfKb add_clause -> can't add an empty clause")
         if not isinstance(cnf_sentence, tuple):
             print("ERROR: CnfKb add_clause -> cnf_sentence must be a tuple")
 
         for i in range(len(cnf_sentence)):
 
             if not isinstance(cnf_sentence[i], int):
-                print("ERROR: CnfKb add_clause: only int type tuples allowed")
+                print("ERROR: CnfKb add_clause -> only int type tuples allowed")
 
             if abs(cnf_sentence[i]) > self.nbvar:
-                print("ERROR: CnfKb add_clause: trying to add" + cnf_sentence[i] + "clause, there are only" +
+                print("ERROR: CnfKb add_clause -> trying to add" + cnf_sentence[i] + "clause, there are only" +
                       self.nbvar + "clauses")
 
             if cnf_sentence[i] == 0:
-                print("ERROR: CnfKb add_clause: 0 clause not allowed")
+                print("ERROR: CnfKb add_clause -> 0 clause not allowed")
 
         self.kb.append(cnf_sentence)
 
