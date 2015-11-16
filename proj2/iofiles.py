@@ -7,16 +7,25 @@ from cnf_kb import CnfKb
 
 
 def read_kb(filename):
+    """
+    Creates a knowledge base from file in DIMACS format.
+    :param filename: File's relative address.
+    :return: CnfKb instance.
+    """
     if not os.path.isfile(filename):
         print('ERROR: iofiles new_kb -> ' + filename + ' not found')
         exit()
 
     f = open(filename, 'r')
 
+    # line assignment could be in the while cycle if the if clause and line assignment were swapped.
+    # This prevents a warning
+    # note to self: must fight OCD
+    line = f.readline()
     while True:
-        line=f.readline()
         if line[0] != 'c':
             break
+        line = f.readline()
 
     info = line.split()
     nbvar = int(info[2])
@@ -36,6 +45,12 @@ def read_kb(filename):
 
 
 def write_kb(filename, kb):
+    """
+    Writes knowledge base in DIMACS format file.
+    :param filename: Output file's relative address
+    :param kb: CnfKb instance.
+    :return:  ---
+    """
     if not isinstance(kb, CnfKb):
         print('ERROR: iofiles write_kb -> kb must be a CnfKb instance')
 
@@ -69,4 +84,4 @@ def write_kb(filename, kb):
             for j in range(1, len(clause)):
                 s += ' ' + str(clause[j])
 
-            f.write(s + ' 0' +  '\n')
+            f.write(s + ' 0' + '\n')
