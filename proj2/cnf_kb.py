@@ -38,7 +38,19 @@ class CnfKb:
             if cnf_sentence[i] == 0:
                 print("ERROR: CnfKb add_clause -> 0 clause not allowed")
 
-        self.kb.append(cnf_sentence)
+        self.__insert(cnf_sentence)
+
+    def __insert(self, cnf_sentence, index=None):
+        """
+        Private method for inserting in list
+        :param cnf_sentence:
+        :return: ---
+        """
+        if index is None:
+            self.kb.append(cnf_sentence)
+        else:
+            self.kb.insert(index, cnf_sentence)
+
 
     def remove_clauses(self, clause):
         """
@@ -119,14 +131,14 @@ class CnfKb:
 
     def unit_variables(self):
         """
-        Returns all unit variables in the knowledge base.
+        Returns all unit variables in the knowledge base. Negation (-) is included
         :return: List of CNF tuples.
         """
         units = list()
 
         for clause in self.kb:
             if len(clause) == 1:
-                units.append(abs(clause[0]))
+                units.append(clause[0])
 
         return units
 
@@ -162,6 +174,68 @@ class CnfKb:
 
         # symbol xor neg_symbol
         return symbol != neg_symbol
+
+    def __remove_var_from_clause(self, variable, clause):
+        """
+        Removes the variable from the clause. If the variable is negated, the argument must be negated and vice-versa.
+        Clause might be either a clause or an index. If it is a clause it will check the first clause in knowledge base
+        that match this one. If clause is an integer it will check if a clause in given index. Returns true if removed.
+        :param variable: Integer.
+        :param clause: Tuple of integers.
+        :return: Boolean.
+        """
+        removed = False
+
+        if isinstance(clause, tuple):
+            for clause_index in range(len(self.kb)):
+                if clause == self.kb[clause_index] and variable in self.kb[clause_index]:
+
+                    clause = self.remove_clause(clause_index)
+                    new_clause = [var for var in clause if var != variable]
+                    new_clause = tuple(new_clause)
+                    self.__insert(new_clause, clause_index)
+
+                    if len(new_clause) < len(clause):
+                        return True
+                    else:
+                        return False
+
+        if isinstance(clause, int):
+            clause_index = clause
+            clause = self.remove_clause(clause_index)
+            new_clause = [var for var in clause if var != variable]
+            new_clause = tuple(new_clause)
+            self.__insert(new_clause, clause_index)
+            if len(new_clause) < len(clause):
+                return True
+            else:
+                return False
+
+    def __is_subset(self, subclause, clause):
+
+        """
+        If subclause is a subset of clause, returns true
+        :param subclause: CNF tuple.
+        :param clause: CNF tuple.
+        :return: Boolean.
+        """
+        if not isinstance(subclause, tuple) or not isinstance(clause, tuple):
+            print('ERROR: CnfKb is_subset -> subclause and clause must be tuples')
+
+        return frozenset(subclause) <= frozenset(clause)
+
+    """
+    def simplify(self):
+        # TODO do this after subset function, remove var from clause
+
+        units = self.unit_variables()
+        for clause in self.kb:
+            for unit in units:
+                if unit in clause:
+                    self.remove_clause(clause)
+                if -unit in clause:
+                    self.__remove_var_from_clause(-unit, clause)
+    """
 
     def __copy__(self):
         # TODO Test this
