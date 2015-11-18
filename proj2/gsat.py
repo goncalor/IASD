@@ -23,7 +23,6 @@ class GSat:
         return var_list
 
     def __best_successor(self, var_values):
-        # TODO test this when __satisfied_clauses is done
         var_scores = list()
 
         for var in range(self.kb.nbvar):
@@ -71,8 +70,6 @@ class GSat:
         return score
 
     def solve(self):
-
-        # TODO test this
 
         for res in range(self.restarts):
             values = self.__randomize_variables()
