@@ -51,7 +51,6 @@ class CnfKb:
         else:
             self.kb.insert(index, cnf_sentence)
 
-
     def remove_clauses(self, clause):
         """
         Removes all clauses equal to the argument provided.
@@ -184,8 +183,6 @@ class CnfKb:
         :param clause: Tuple of integers.
         :return: Boolean.
         """
-        removed = False
-
         if isinstance(clause, tuple):
             for clause_index in range(len(self.kb)):
                 if clause == self.kb[clause_index] and variable in self.kb[clause_index]:
@@ -211,7 +208,8 @@ class CnfKb:
             else:
                 return False
 
-    def __is_subset(self, subclause, clause):
+    @staticmethod
+    def __is_subset(subclause, clause):
 
         """
         If subclause is a subset of clause, returns true
