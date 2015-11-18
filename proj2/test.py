@@ -2,25 +2,26 @@
 import copy
 
 from cnf_kb import CnfKb
+from wsat import WSat
 import iofiles
+from gsat import GSat
+import time
 
 
-kb3 = iofiles.read_kb('in.txt')
-
-kb3.add_clause((1, 2, 3))
-kb3.add_clause((1, 2, 3))
-kb3.add_clause((1,))
-
-kb3.remove_variable(3)
-kb3.remove_variable(1)
-kb3.remove_variable(2)
+kb3 = iofiles.read_kb('problems/uf50-01.cnf')
 
 print(kb3)
 
-var = 2
-print(str(var) + ' is pure: ' + str(kb3.pure_symbol(var)))
-print(kb3.pure_symbol())
+walk = WSat(kb3, 0.5, 1000)
+greedy = GSat(kb3, 5, 200)
 
-print(kb3.unit_variables())
+start = time.time()
+print(walk.solve())
+print(str(time.time() - start) + ' seconds')
+
+start = time.time()
+print(greedy.solve())
+print(str(time.time() - start) + ' seconds')
+
 
 
