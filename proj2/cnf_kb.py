@@ -27,18 +27,19 @@ class CnfKb:
             print("ERROR: CnfKb add_clause -> cnf_sentence must be a tuple")
 
         for i in range(len(cnf_sentence)):
-
             if not isinstance(cnf_sentence[i], int):
                 print("ERROR: CnfKb add_clause -> only int type tuples allowed")
 
             if abs(cnf_sentence[i]) > self.nbvar:
-                print("ERROR: CnfKb add_clause -> trying to add" + cnf_sentence[i] + "clause, there are only" +
-                      self.nbvar + "clauses")
+                print("ERROR: CnfKb add_clause -> trying to add" +
+                        cnf_sentence[i] + "variable, there are only" +
+                        self.nbvar + "variables")
 
             if cnf_sentence[i] == 0:
                 print("ERROR: CnfKb add_clause -> 0 clause not allowed")
 
         self.__insert(cnf_sentence)
+
 
     def __insert(self, cnf_sentence, index=None):
         """
@@ -66,6 +67,7 @@ class CnfKb:
         self.kb = list(filter(clause.__ne__, self.kb))
 
         return len(self) < old_size
+
 
     def remove_clause(self, clause):
         """
@@ -129,6 +131,7 @@ class CnfKb:
                 new_clause = tuple(new_clause)
                 self.kb.insert(clause_index, new_clause)
 
+
     def unit_variables(self):
         """
         Returns all unit variables in the knowledge base. Negation (-) is included
@@ -141,6 +144,7 @@ class CnfKb:
                 units.append(clause[0])
 
         return units
+
 
     def pure_symbol(self, variable=None):
         """
@@ -172,8 +176,10 @@ class CnfKb:
                 if symbol:
                     return False
 
+        # TODO maybe just return True here
         # symbol xor neg_symbol
         return symbol != neg_symbol
+
 
     def __remove_var_from_clause(self, variable, clause):
         """
@@ -210,6 +216,7 @@ class CnfKb:
                 return True
             else:
                 return False
+
 
     def __is_subset(self, subclause, clause):
 
