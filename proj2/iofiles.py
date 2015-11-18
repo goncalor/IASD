@@ -18,29 +18,30 @@ def read_kb(filename):
 
     f = open(filename, 'r')
 
-    # line assignment could be in the while cycle if the if clause and line assignment were swapped.
-    # This prevents a warning
-    # note to self: must fight OCD
-    line = f.readline()
-    while True:
+    # consume comments in the preamble. comment lines start with a 'c'
+    for line in f:
         if line[0] != 'c':
             break
-        line = f.readline()
 
-    info = line.split()
-    nbvar = int(info[2])
+    # the next line in the file contains info on the number of clauses and
+    # variables. the line begins with a 'p' and the format (cnf).
+    # example line: 'p cnf 5 3' --> 5 variables and 3 clauses
+    (nbvar, nclauses)= [int(i) for i in line.split()[2:]]
 
     new_kb = CnfKb(nbvar)
 
+    # each of the next lines in the file represents a clause. each line ends
+    # with a '0'. example line: ' 1 -5 4 0'
+    # save the clauses into an object
     for line in f:
         aux_list = list()
-        for variable in line.split():
+        for variable in line.split()[:-1]:   # discard the ending '0'
             variable = int(variable)
             aux_list.append(variable)
 
-        aux_list.pop()
         new_kb.add_clause(tuple(aux_list))
 
+    f.close()
     return new_kb
 
 
