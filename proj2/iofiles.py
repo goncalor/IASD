@@ -13,7 +13,7 @@ def read_kb(filename):
     :return: CnfKb instance.
     """
     if not os.path.isfile(filename):
-        print('ERROR: iofiles new_kb -> ' + filename + ' not found')
+        print('ERROR: iofiles read_kb -> ' + filename + ' not found')
         exit()
 
     f = open(filename, 'r')
@@ -31,13 +31,20 @@ def read_kb(filename):
     nbvar = int(info[2])
 
     new_kb = CnfKb(nbvar)
-
+    end_of_file = False
     for line in f:
+        while line[0] == ' ':
+            line = line[1:len(line)]
+
+        if line[0] == '%':
+            break
+
         aux_list = list()
         for variable in line.split():
             variable = int(variable)
             aux_list.append(variable)
 
+        # pop the 0 and add to the list
         aux_list.pop()
         new_kb.add_clause(tuple(aux_list))
 
