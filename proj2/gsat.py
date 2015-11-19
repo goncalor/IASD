@@ -11,7 +11,9 @@ class GSat:
         self.restarts = restarts
         self.max_climb = max_climb
 
+
     def __randomize_variables(self):
+        """ returns a list with a random model """
         var_list = list()
 
         for var in range(0, self.kb.nbvar):
@@ -22,7 +24,15 @@ class GSat:
 
         return var_list
 
+
     def __best_successor(self, var_values):
+        """
+        Args:
+            var_values: A model
+        Returns:
+            A model that is a best successor of the 'var_values' model. And the
+            score of that model. Returns a tuple.
+        """
         var_scores = list()
 
         for var in range(self.kb.nbvar):
@@ -34,6 +44,8 @@ class GSat:
 
             var_scores.append(self.__satisfied_clauses(temp_values))
 
+        # TODO: this can be made more efficient. but must think about
+        # randomization (or remove it)
         max_score = max(var_scores)
 
         highest_scores = list()
@@ -47,7 +59,14 @@ class GSat:
 
         return aux_values, max_score
 
+
     def __satisfied_clauses(self, var_values):
+        """
+        Args:
+            var_values: A model
+        Returns:
+            The number of satisfied clauses.
+        """
         score = 0
         satisfied = 0
 
@@ -69,8 +88,8 @@ class GSat:
 
         return score
 
-    def solve(self):
 
+    def solve(self):
         for res in range(self.restarts):
             values = self.__randomize_variables()
 
