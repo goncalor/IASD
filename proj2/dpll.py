@@ -1,5 +1,6 @@
 from model import Model
 from cnf_kb import CnfKb
+from copy import copy
 
 """
 Implements a DPLL SAT solver class.
@@ -12,25 +13,73 @@ class DPLL:
 
 
 
-    def run(self, sentence):
+    def run(self, sentence, model):
+        """
+        Runs DPLL to check whether a sentence is satisfiable.
+
+        Args:
+            sentence: The whose satisfiability will be checked.
+            model: A starting Model
+        Returns:
+            True if the sentence is satisfiable. False otherwise.
+        """
+        if sentence.is_satisfied_by(model)
+            return True
+        if sentence.check_empty_clause()
+            return False
+
+        # find unit clauses. assign values to them
+        model_modified = False
+        new_model = copy(model)
+        new_sentence = copy(sentence)
+        for clause in sentence:
+            if len(clause) == 1:
+                # assign the needed value to make the clause true
+                new_model.assign(abs(clause[0]), clause[0] > 0)
+                # remove the unit clause
+                new_sentence.remove_clause(clause)
+
+
+        # find pure symbols. assign values to them
+
+
+
+        """
+        function DPLL(Φ)
+           if Φ is a consistent set of literals
+               then return true;
+           if Φ contains an empty clause
+               then return false;
+           for every unit clause l in Φ
+              Φ ← unit-propagate(l, Φ);
+           for every literal l that occurs pure in Φ
+              Φ ← pure-literal-assign(l, Φ);
+           l ← choose-literal(Φ);
+
+           return DPLL(Φ ∧ l) or DPLL(Φ ∧ not(l));
+
+        """
+
+
+
+
+
+
+
+    def __unit_propagate(self, sentence, model):
+        """ Remove true clauses; and simplify cluases where possible. """
+
         pass
 
 
 
 
 
+
+
 """
-function DPLL(Φ)
-   if Φ is a consistent set of literals
-       then return true;
-   if Φ contains an empty clause
-       then return false;
-   for every unit clause l in Φ
-      Φ ← unit-propagate(l, Φ);
-   for every literal l that occurs pure in Φ
-      Φ ← pure-literal-assign(l, Φ);
-   l ← choose-literal(Φ);
 
-   return DPLL(Φ ∧ l) or DPLL(Φ ∧ not(l));
+DPLL (clauses, symbols \ {p}, model ∪ {p=value})
 
+- use degree heuristic for choose-literal()
 """

@@ -11,7 +11,7 @@ class Model:
             variables should have values None, False or True.
         """
         if nvars:
-            self.values = [None for i in range(nvars+1)]
+            self.values = [None] * (nvars+1)
         elif values:
             self.values = list([None] + values)
         else:
@@ -42,6 +42,11 @@ class Model:
             val: The new value for the assigned variable.
         """
         self.values[varnum] = val
+
+
+    def __copy__(self):
+        return Model(values=self.values[1:])
+
 
     def __getitem__(self, key):
         return self.values[key]

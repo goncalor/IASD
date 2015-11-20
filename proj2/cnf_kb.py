@@ -70,8 +70,9 @@ class CnfKb:
 
     def remove_clause(self, clause):
         """
-        Removes the clause provided in the argument. If clause is a tuple, it searches and deletes it. If clause is an
-        integer, deletes the clause in that index.
+        Removes the clause provided in the argument. If clause is a tuple, it
+        searches and deletes it. If clause is an integer, deletes the clause in
+        that index.
         :param clause: Either a CNF tuple or an integer.
         :return: If the argument is a tuple, returns true or false if clause is removed or not. If the argument is an
                     integer returns the removed CNF tuple.
@@ -101,15 +102,18 @@ class CnfKb:
 
         return self.kb[index]
 
+
+    # TODO: change name to 'has_empty_clause'
     def check_empty_clause(self):
         """
         Checks if there are empty clauses in the knowledge base.
         :return: Boolean.
         """
-        for clause in self.kb:
+        for clause in self:
             if len(clause) == 0:
                 return True
         return False
+
 
     def remove_variable(self, variable):
         """
@@ -145,39 +149,42 @@ class CnfKb:
         return units
 
 
-    def pure_symbol(self, variable=None):
+    def is_pure_symbol(self, symbol):
         """
-        Checks if variable is pure. If no argument is provided returns list of all pures.
-        :param variable: Either an integer or None.
-        :return: True if pure, false if not. If no argument is provided return list of pures.
+        Finds whether a symbol is pure.
+
+        Args:
+            symbol: The symbol we want to check for pureness. A negative value
+            represents negation.
+        Returns:
+            True if 'symbol' is pure (includes the case in which the symbol is
+            not found in the sentece). False if 'symbol' is not pure.
         """
-        if variable is None:
-            return [var for var in range(1, self.nbvar) if self.pure_symbol(var)]
-
-        if not isinstance(variable, int):
-            print('ERROR: CnfKb pure_symbol -> variable must be of type int')
-
-        if variable == 0 or abs(variable) > self.nbvar:
-            print('ERROR: CnfKb remove_clause -> variable is 0 or not defined')
-
-        neg_symbol = False
-        symbol = False
-
-        for clause in self.kb:
-            if variable in clause:
-                symbol = True
-                # if neg was already found it is not pure
-                if neg_symbol:
-                    return False
-            if -variable in clause:
-                neg_symbol = True
-                # if symbol was already found it is not pure
-                if symbol:
+        for clause in self:
+            for var in clause:
+                if var == -symbol:
                     return False
 
-        # TODO maybe just return True here
-        # symbol xor neg_symbol
-        return symbol != neg_symbol
+        return True
+
+
+    def pure_symbols(self):
+        """
+        Returns a list with all the pure symbols in the sentence. Negative
+        values represent the negation of the a symbol.
+        """
+        findings = [None] * (self.nbvar+1)
+        pure = [None] * (self.nbvar+1)
+
+        for clause in self:
+            for var in clause:
+                if findings[abs(var)] == None:  # first time found
+                    findings[abs(var)] = var
+                    pure[abs(var)] = True
+                elif pure[abs(var)] and findings[abs(var)] + var == 0:
+                        pure[abs(var)] = False  # not pure
+
+        return [symbol for symbol in findings if symbol and pure[abs(symbol)]]
 
 
     def __remove_var_from_clause(self, variable, clause):
@@ -229,7 +236,7 @@ class CnfKb:
         return frozenset(subclause) <= frozenset(clause)
 
 
-    def is_satisfied(self, model):
+    def is_satisfied_by(self, model):
         for clause in self:
             for var in clause:
                 if (var > 0 and model[abs(var)]) or (var < 0 and not
