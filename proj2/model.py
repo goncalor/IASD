@@ -1,8 +1,6 @@
-"""
-Defines a model for the world.
-"""
 
 class Model:
+    """ Defines a model for the world.  """
 
     def __init__(self, nvars=0, values=[]):
         """
@@ -48,3 +46,4 @@ class Model:
     
     def __str__(self):
         return str(self.values)
+

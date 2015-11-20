@@ -228,6 +228,26 @@ class CnfKb:
 
         return frozenset(subclause) <= frozenset(clause)
 
+
+    def is_satisfied(self, model):
+        pass
+
+
+    def solve(self, solver):
+        """
+        Solves this sentence, using the specified solver class. By calling
+        this method the setence is not affected.
+
+        Args:
+            solver: A solver object, which implements a run() method, which
+            receives a sentence.
+
+        Returns:
+            The value returned by solver.run().
+        """
+        return solver.run(self.__deepcopy__())
+
+
     """
     def simplify(self):
         # TODO do this after subset function, remove var from clause
@@ -249,6 +269,7 @@ class CnfKb:
 
         return new_kb
 
+
     def __deepcopy__(self, memo=None):
         new_kb = CnfKb(self.nbvar)
 
@@ -256,8 +277,24 @@ class CnfKb:
 
         return new_kb
 
+
+    def __iter__(self):
+        self.__currclause = 0
+        return self
+
+
+    def __next__(self):
+        if self.__currclause < len(self.kb):
+            tmp = self.kb[self.__currclause]
+            self.__currclause += 1
+            return tmp
+        else:
+            raise StopIteration()
+
+
     def __len__(self):
         return len(self.kb)
+
 
     def __str__(self):
         if len(self.kb) == 0:
