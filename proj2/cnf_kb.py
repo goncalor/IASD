@@ -237,15 +237,50 @@ class CnfKb:
 
 
     def is_satisfied_by(self, model):
+        """
+        Finds is a given model satisfies the sentence.
+
+        Args:
+            model: The model the sentence will be tested with.
+
+        Returns:
+            True if 'model' satisfies the sentence. False otherwise.
+        """
         for clause in self:
             for var in clause:
-                if (var > 0 and model[abs(var)]) or (var < 0 and not
+                if (var > 0 and model[var]) or (var < 0 and not
                         model[abs(var)]):
                     break   # this clause is true. check next clause
             else:
                 return False
 
         return True
+
+
+    def simplify(self, model):
+        """
+        Simplifies the sentence as possible taking into account a given model.
+        Clauses that are true with the model are removed. Symbols that are false
+        according to the model are removed from the clauses.
+
+        Args:
+            model: The model the sentence will simplified against.
+
+        Returns:
+
+        """
+        for clause in copy(self):
+            for var in clause:
+                if (var > 0 and model[var]) or (var < 0 and not
+                        model[abs(var)]):
+                    # this var makes the clause true. remove the clause
+                    self.remove_clause(clause)
+                    break
+                elif model[abs(var)] != None:
+                    # this var does not help making the clause true. remove the
+                    # var from the clause
+                    self.remove_clause(clause)
+                    self.add_clause(tuple(i for i in clause if i != var)
 
 
     def solve(self, solver):
@@ -262,19 +297,6 @@ class CnfKb:
         """
         return solver.run(self.__deepcopy__())
 
-
-    """
-    def simplify(self):
-        # TODO do this after subset function, remove var from clause
-
-        units = self.unit_variables()
-        for clause in self.kb:
-            for unit in units:
-                if unit in clause:
-                    self.remove_clause(clause)
-                if -unit in clause:
-                    self.__remove_var_from_clause(-unit, clause)
-    """
 
     def __copy__(self):
         # TODO Test this

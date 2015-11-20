@@ -38,10 +38,15 @@ class Model:
         Assigns a value to a variable in the model.
 
         Args:
-            varnum: The number of the variable that will be assigned.
+            varnum: The number (ID) of the variable that will be assigned.
             val: The new value for the assigned variable.
         """
         self.values[varnum] = val
+
+
+    def next_unassigned(self):
+        """ Returns the ID of the unassigned variable with the lowest ID. """
+        return self.values.index(None)
 
 
     def __copy__(self):
