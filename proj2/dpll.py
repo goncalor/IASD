@@ -42,9 +42,9 @@ class DPLL:
         Returns:
             True if the sentence is satisfiable. False otherwise.
         """
-        if sentence.is_satisfied_by(model)
+        if sentence.is_satisfied_by(model):
             return True
-        if sentence.check_empty_clause()
+        if sentence.check_empty_clause():
             return False
 
         new_model = copy(model)

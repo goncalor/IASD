@@ -280,7 +280,7 @@ class CnfKb:
                     # this var does not help making the clause true. remove the
                     # var from the clause
                     self.remove_clause(clause)
-                    self.add_clause(tuple(i for i in clause if i != var)
+                    self.add_clause(tuple(i for i in clause if i != var))
 
 
     def solve(self, solver):

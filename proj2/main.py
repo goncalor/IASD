@@ -1,5 +1,7 @@
 # our created modules
 import iofiles
+from dpll import DPLL
+from model import Model
 
 # other modules
 import argparse
@@ -23,7 +25,7 @@ if __name__ == "__main__":
 
     for f in args.sentence:
         print('Reading sentence from ' + f.name + '... ', end = '')
-        # TODO
+        sentence = iofiles.read_kb(f.name)
         print('Done.\n')
 
         if args.gsat:
@@ -43,6 +45,8 @@ if __name__ == "__main__":
         if args.dpll:
             print('Solving with DPLL... ', end = '')
             start_time = time.time()
+
+            DPLL().run(sentence, Model(sentence.nbvar))
 
             print('Done.')
             print("DPLL time:", time.time() - start_time, '\n')
