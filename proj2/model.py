@@ -43,6 +43,8 @@ class Model:
         """
         self.values[varnum] = val
 
+    def __getitem__(self, key):
+        return self.values[key]
     
     def __str__(self):
         return str(self.values)

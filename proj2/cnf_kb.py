@@ -230,7 +230,15 @@ class CnfKb:
 
 
     def is_satisfied(self, model):
-        pass
+        for clause in self:
+            for var in clause:
+                if (var > 0 and model[abs(var)]) or (var < 0 and not
+                        model[abs(var)]):
+                    break   # this clause is true. check next clause
+            else:
+                return False
+
+        return True
 
 
     def solve(self, solver):
