@@ -42,9 +42,10 @@ class DPLL:
         Returns:
             True if the sentence is satisfiable. False otherwise.
         """
-        #print(">> DPLL call")
+        print(">> DPLL call")
         if sentence.is_satisfied_by(model):
-            #print("SOLUTION!\n> > > > > ", model)
+            print("sentence", sentence)
+            print("SOLUTION!\n> > > > > ", model)
             return True
         if sentence.check_empty_clause():
             return False
@@ -68,11 +69,17 @@ class DPLL:
         # simplify the sentence according to the new model
         new_sentence.simplify(new_model)
 
+        print(new_model, len(new_sentence), end=' ')
+
         # pick an unassigned literal from the model
         # TODO: accept other methods for choosing a literal
-        literal = new_model.next_unassigned()
+        try:
+            literal = new_model.next_unassigned()
+            print(literal)
+        except:
+            print("literals exhausted")
+            return False
 
-        #print(new_model, len(new_sentence), literal)
 
         # TODO: check this
         return self.run(new_sentence, copy(new_model).assign(literal, True)) \

@@ -21,8 +21,8 @@ class CnfKb:
         :param cnf_sentence: CNF clause in a tuple.
         :return: Nothing.
         """
-        if len(cnf_sentence) == 0:
-            print("ERROR: CnfKb add_clause -> can't add an empty clause")
+        #if len(cnf_sentence) == 0:
+        #    print("ERROR: CnfKb add_clause -> can't add an empty clause")
         if not isinstance(cnf_sentence, tuple):
             print("ERROR: CnfKb add_clause -> cnf_sentence must be a tuple")
 
@@ -270,17 +270,21 @@ class CnfKb:
 
         """
         for clause in copy(self):
+            new_clause = list(clause)
+            add_new = True
             for var in clause:
-                if (var > 0 and model[var]) or (var < 0 and not
-                        model[abs(var)]):
+                if (var > 0 and model[var]) or (var < 0 and 
+                        model[abs(var)] != None):
                     # this var makes the clause true. remove the clause
-                    self.remove_clause(clause)
+                    add_new = False
                     break
                 elif model[abs(var)] != None:
                     # this var does not help making the clause true. remove the
                     # var from the clause
-                    self.remove_clause(clause)
-                    self.add_clause(tuple(i for i in clause if i != var))
+                    new_clause.remove(var)
+            self.remove_clause(clause)
+            if add_new:
+                self.add_clause(tuple(new_clause))
 
 
     def solve(self, solver):
@@ -339,13 +343,8 @@ class CnfKb:
 
         s = ''
 
-        s += str(self.kb[0])
-
-        if self.kb == 1:
-            return s
-
-        for i in range(1, len(self.kb)):
+        for clause in self:
+            s += str(clause)
             s += "and"
-            s += str(self.kb[i])
 
-        return s
+        return s[:-3]

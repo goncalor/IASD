@@ -11,7 +11,7 @@ class Model:
             variables should have values None, False or True.
         """
         if nvars:
-            self.values = [True] + [None] * (nvars)
+            self.values = [True] + [None]*nvars
         elif values:
             self.values = list([True] + values)
         else:
