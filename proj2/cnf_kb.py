@@ -246,10 +246,14 @@ class CnfKb:
         Returns:
             True if 'model' satisfies the sentence. False otherwise.
         """
+        #print(model)
+        # TODO: empty clause
+        if not self.kb:
+            print("EMPTY SENTENCE IN is_satisfied_by()")
         for clause in self:
             for var in clause:
-                if (var > 0 and model[var]) or (var < 0 and not
-                        model[abs(var)]):
+                if (var > 0 and model[var]) or (var < 0 and
+                        model[abs(var)] == False):
                     break   # this clause is true. check next clause
             else:
                 return False
@@ -274,7 +278,7 @@ class CnfKb:
             add_new = True
             for var in clause:
                 if (var > 0 and model[var]) or (var < 0 and 
-                        model[abs(var)] != None):
+                        model[abs(var)] == False):
                     # this var makes the clause true. remove the clause
                     add_new = False
                     break

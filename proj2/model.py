@@ -62,5 +62,5 @@ class Model:
         return self.values[key]
     
     def __str__(self):
-        return str(self.values)
+        return str(self.values[1:])
 

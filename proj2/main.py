@@ -29,28 +29,33 @@ if __name__ == "__main__":
         print('Done.\n')
 
         if args.gsat:
-            print('Solving with GSAT... ', end = '')
+            print('Solving with GSAT... ')
             start_time = time.time()
 
             print('Done.')
             print("GSAT time:", time.time() - start_time, '\n')
 
         if args.wsat:
-            print('Solving with WalkSAT... ', end = '')
+            print('Solving with WalkSAT... ')
             start_time = time.time()
 
             print('Done.')
             print("WalkSAT time:", time.time() - start_time, '\n')
 
         if args.dpll:
-            print('Solving with DPLL... ', end = '')
+            print('Solving with DPLL... ')
             start_time = time.time()
 
-            DPLL().run(sentence, Model(sentence.nbvar))
+            ret = DPLL().run(sentence, Model(sentence.nbvar))
             #DPLL().run(sentence, Model(values=[True] * sentence.nbvar))
 
             print('Done.')
             print("DPLL time:", time.time() - start_time, '\n')
+            if ret:
+                print("Satisfiable.")
+            else:
+                print("Unsatisfiable.")
+
 
 
     # write solutions to a file
