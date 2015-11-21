@@ -1,7 +1,9 @@
 # our created modules
 import iofiles
-from dpll import DPLL
 from model import Model
+from gsat import GSat
+from wsat import WSat
+from dpll import DPLL
 
 # other modules
 import argparse
@@ -32,22 +34,39 @@ if __name__ == "__main__":
             print('Solving with GSAT... ')
             start_time = time.time()
 
+            greedy = GSat(sentence, 5, 200)
+            greedy.solve()
+
             print('Done.')
             print("GSAT time:", time.time() - start_time, '\n')
+            #print(greedy.solution)
+
+            if greedy.solution:
+                print("Satisfiable.")
+            else:
+                print("Unsatisfiable.")
 
         if args.wsat:
             print('Solving with WalkSAT... ')
             start_time = time.time()
 
+            walk = WSat(sentence, 0.5, 1000)
+            walk.solve()
+
             print('Done.')
             print("WalkSAT time:", time.time() - start_time, '\n')
+            #print(walk.solution)
+
+            if walk.solution:
+                print("Satisfiable.")
+            else:
+                print("Unsatisfiable.")
 
         if args.dpll:
             print('Solving with DPLL... ')
             start_time = time.time()
 
             ret = DPLL().run(sentence, Model(sentence.nbvar))
-            #DPLL().run(sentence, Model(values=[True] * sentence.nbvar))
 
             print('Done.')
             print("DPLL time:", time.time() - start_time, '\n')

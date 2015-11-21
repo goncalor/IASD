@@ -10,6 +10,7 @@ class GSat:
         self.kb = kb
         self.restarts = restarts
         self.max_climb = max_climb
+        self.solution = None
 
 
     def __randomize_variables(self):
@@ -98,6 +99,7 @@ class GSat:
                 values, score = self.__best_successor(values)
 
                 if score == len(self.kb):
-                    return values
+                    self.solution = [i > 0 for i in values]
+                    return True
 
-        return None
+        return False

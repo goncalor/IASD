@@ -28,7 +28,7 @@ Implements a DPLL SAT solver class.
 class DPLL:
 
     def __init__(self):
-        pass
+        self.solution = None
 
 
     def run(self, sentence, model):
@@ -44,8 +44,6 @@ class DPLL:
         """
         #print(">> DPLL call")
         if sentence.is_satisfied_by(model):
-            print("\nsentence", sentence)
-            print("SOLUTION!\n> > > > > ", model)
             self.solution = model
             return True
         if sentence.check_empty_clause():
@@ -83,6 +81,7 @@ class DPLL:
 
         # pick an unassigned literal from the model
         # TODO: accept other methods for choosing a literal
+        # e.g.: use degree heuristic
         try:
             literal = new_model.next_unassigned()
             #print(literal)
@@ -96,8 +95,3 @@ class DPLL:
                 or self.run(new_sentence, copy(new_model).assign(literal,
                     False))
 
-
-"""
-
-- use degree heuristic for choose-literal()
-"""

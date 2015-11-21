@@ -9,6 +9,7 @@ class WSat:
         self.kb = kb
         self.p = p
         self.max_flips = max_flips
+        self.solution = None
 
     def __randomize_variables(self):
         var_list = list()
@@ -94,7 +95,8 @@ class WSat:
 
         for i in range(self.max_flips):
             if self.__satisfied_clauses(var_values) == clause_nr:
-                return var_values
+                self.solution = [i > 0 for i in var_values]
+                return True
 
             clause = self.__random_clause()
 
@@ -114,6 +116,5 @@ class WSat:
             else:
                 var_values = self.__best_successor(var_values)
 
-        return None
-
+        return False
 
