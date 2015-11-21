@@ -1,6 +1,6 @@
 from model import Model
 from cnf_kb import CnfKb
-from copy import copy
+from copy import copy, deepcopy
 
 """
 Implements a DPLL SAT solver class.
@@ -42,40 +42,42 @@ class DPLL:
         Returns:
             True if the sentence is satisfiable. False otherwise.
         """
+        #print(">> DPLL call")
         if sentence.is_satisfied_by(model):
+            #print("SOLUTION!\n> > > > > ", model)
             return True
         if sentence.check_empty_clause():
             return False
 
-        new_model = copy(model)
-        new_sentence = copy(sentence)
-        model_modified = False
+        new_model = deepcopy(model)
+        new_sentence = deepcopy(sentence)
 
         # find unit clauses. assign values to them
         for clause in sentence:
+            #print(clause)
             if len(clause) == 1:
                 # assign the needed value to make the clause true
                 new_model.assign(abs(clause[0]), clause[0] > 0)
                 # remove the unit clause
                 new_sentence.remove_clause(clause)
-                model_modified = True
 
         # find pure symbols. assign values to them
         for symbol in new_sentence.pure_symbols():
             new_model.assign(abs(symbol), symbol > 0)
-            model_modified = True
 
         # simplify the sentence according to the new model
-        if model_modified:
-            new_sentence.simplify(new_model)
+        new_sentence.simplify(new_model)
 
         # pick an unassigned literal from the model
         # TODO: accept other methods for choosing a literal
         literal = new_model.next_unassigned()
 
+        #print(new_model, len(new_sentence), literal)
+
         # TODO: check this
-        new_model.flip(next_unassigned)
-        return self.run(new_sentence, new_model)
+        return self.run(new_sentence, copy(new_model).assign(literal, True)) \
+                or self.run(new_sentence, copy(new_model).assign(literal,
+                    False))
 
 
 """

@@ -47,6 +47,7 @@ if __name__ == "__main__":
             start_time = time.time()
 
             DPLL().run(sentence, Model(sentence.nbvar))
+            #DPLL().run(sentence, Model(values=[True] * sentence.nbvar))
 
             print('Done.')
             print("DPLL time:", time.time() - start_time, '\n')

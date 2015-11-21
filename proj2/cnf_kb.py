@@ -1,4 +1,4 @@
-import copy
+from copy import copy, deepcopy
 
 
 class CnfKb:
@@ -302,7 +302,7 @@ class CnfKb:
         # TODO Test this
         new_kb = CnfKb(self.nbvar)
 
-        new_kb.kb = copy.copy(self.kb)
+        new_kb.kb = copy(self.kb)
 
         return new_kb
 
@@ -310,7 +310,7 @@ class CnfKb:
     def __deepcopy__(self, memo=None):
         new_kb = CnfKb(self.nbvar)
 
-        new_kb.kb = copy.deepcopy(self.kb, memo)
+        new_kb.kb = deepcopy(self.kb, memo)
 
         return new_kb
 

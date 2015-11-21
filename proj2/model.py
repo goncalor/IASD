@@ -11,9 +11,9 @@ class Model:
             variables should have values None, False or True.
         """
         if nvars:
-            self.values = [None] * (nvars+1)
+            self.values = [True] + [None] * (nvars)
         elif values:
-            self.values = list([None] + values)
+            self.values = list([True] + values)
         else:
             raise Exception("Empty model")
 
@@ -35,13 +35,18 @@ class Model:
 
     def assign(self, varnum, val):
         """
-        Assigns a value to a variable in the model.
+        Assigns a value to a variable in the model. The model is changed
+        in-place.
 
         Args:
             varnum: The number (ID) of the variable that will be assigned.
             val: The new value for the assigned variable.
+
+        Returns:
+            The new model.
         """
         self.values[varnum] = val
+        return self
 
 
     def next_unassigned(self):
