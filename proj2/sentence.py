@@ -238,9 +238,6 @@ class Sentence:
             True if 'model' satisfies the sentence. False otherwise.
         """
         #print(model)
-        # TODO: empty clause
-        if not self.clauses:
-            print("EMPTY SENTENCE IN is_satisfied_by()")
         for clause in self:
             for var in clause:
                 if (var > 0 and model[var]) or (var < 0 and

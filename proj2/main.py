@@ -15,7 +15,7 @@ parser.add_argument('--gsat', '-gs', action='store_true', help='use GSAT')
 parser.add_argument('--wsat', '-ws', action='store_true', help='use WalkSAT')
 parser.add_argument('--dpll', '-dp', action='store_true', help='use DPLL algorithm')
 parser.add_argument('sentence', type=argparse.FileType('r'), nargs='+',
-        help='a file in DIMASC format, containing a sentence')
+        help='a file in DIMACS format, containing a sentence')
 args = parser.parse_args()
 
 if __name__ == "__main__":
