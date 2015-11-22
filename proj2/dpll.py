@@ -54,11 +54,16 @@ class DPLL:
         #print(new_sentence)
         # find unit clauses. assign values to them
         for clause in sentence:
-            if len(clause) == 1 and new_model[abs(clause[0])] != None:
-                # assign the needed value to make the clause true
-                new_model.assign(abs(clause[0]), clause[0] > 0)
-                # remove the unit clause
-                new_sentence.remove_clause(clause)
+            if len(clause) == 1:
+                if new_model[abs(clause[0])] == None:
+                    # assign the needed value to make the clause true
+                    new_model.assign(abs(clause[0]), clause[0] > 0)
+                    # remove the unit clause
+                    new_sentence.remove_clause(clause)
+                elif new_model[abs(clause[0])] and clause[0] < 0 \
+                        or not new_model[abs(clause[0])] and clause[0] > 0:
+                    return False
+
 
         #print(new_sentence)
 
@@ -80,17 +85,11 @@ class DPLL:
         # pick an unassigned literal from the model
         # TODO: accept other methods for choosing a literal
         # e.g.: use degree heuristic
-        try:
-            literal = new_model.next_unassigned()
-            #print(literal)
-        except:
-            #print("literals exhausted")
+
+        if not sentence.clauses or not sentence.clauses[0]:
             return False
 
-        #if not sentence.clauses or not sentence.clauses[0]:
-        #    return False
-
-        #literal = abs(sentence.clauses[0][0])
+        literal = abs(sentence.clauses[0][0])
 
         return self.run(new_sentence, copy(new_model).assign(literal, True)) \
                 or self.run(new_sentence, copy(new_model).assign(literal,

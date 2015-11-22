@@ -277,7 +277,7 @@ class Sentence:
             if add_new:
                 self.add_clause(tuple(new_clause))
         
-        #self.__remove_supersets()
+        self.__remove_supersets()
 
     def __remove_supersets(self):
         """ Removes clauses that are supersets of other clauses. """
