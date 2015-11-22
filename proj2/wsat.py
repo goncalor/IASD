@@ -24,23 +24,20 @@ class WSat:
         return var_list
 
     def __satisfied_clauses(self, var_values):
+        """
+        Args:
+            var_values: A model
+        Returns:
+            The number of satisfied clauses.
+        """
         score = 0
-        satisfied = 0
 
         # for all clauses
-        for clause_index in range(len(self.sentence)):
-            clause = self.sentence.get_clause(clause_index)
+        for clause in self.sentence:
             # for each variable in the clause
-            for var_index in range(len(clause)):
-                # for each value in the assigned values
-                for value_index in range(len(var_values)):
-                    # if variable is not negated and value is also not negated the clause is satisfied and vice-versa
-                    if clause[var_index] == var_values[value_index]:
-                        score += 1
-                        satisfied = True
-                        break
-                if satisfied:
-                    satisfied = False
+            for var in clause:
+                if var in var_values:
+                    score += 1
                     break
 
         return score
@@ -56,9 +53,7 @@ class WSat:
         return self.p > random_nr
 
     def __random_var_from_clause(self, clause):
-        var_index = random.randint(0, len(clause) - 1)
-
-        return abs(clause[var_index])
+        return random.sample(clause, 1)[0]
 
     def __best_successor(self, var_values):
         var_scores = list()

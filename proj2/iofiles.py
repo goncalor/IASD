@@ -45,7 +45,7 @@ def read_kb(filename):
             variable = int(variable)
             aux_list.append(variable)
 
-        new_kb.add_clause(tuple(aux_list))
+        new_kb.add_clause(set(aux_list))
 
     f.close()
     return new_kb

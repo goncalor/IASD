@@ -67,22 +67,13 @@ class GSat:
             The number of satisfied clauses.
         """
         score = 0
-        satisfied = 0
 
         # for all clauses
-        for clause_index in range(len(self.kb)):
-            clause = self.kb.get_clause(clause_index)
+        for clause in self.kb:
             # for each variable in the clause
-            for var_index in range(len(clause)):
-                # for each value in the assigned values
-                for value_index in range(len(var_values)):
-                    # if variable is not negated and value is also not negated the clause is satisfied and vice-versa
-                    if clause[var_index] == var_values[value_index]:
-                        score += 1
-                        satisfied = True
-                        break
-                if satisfied:
-                    satisfied = False
+            for var in clause:
+                if var in var_values:
+                    score += 1
                     break
 
         return score

@@ -54,11 +54,13 @@ class DPLL:
         #print(new_sentence)
         # find unit clauses. assign values to them
         for clause in sentence:
-            if len(clause) == 1 and new_model[abs(clause[0])] != None:
-                # assign the needed value to make the clause true
-                new_model.assign(abs(clause[0]), clause[0] > 0)
-                # remove the unit clause
-                new_sentence.remove_clause(clause)
+            if len(clause) == 1:
+                element, = clause
+                if new_model[abs(element)] != None:
+                    # assign the needed value to make the clause true
+                    new_model.assign(abs(element), element > 0)
+                    # remove the unit clause
+                    new_sentence.remove_clause(clause)
 
         #print(new_sentence)
 

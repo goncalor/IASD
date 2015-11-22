@@ -18,65 +18,47 @@ class Sentence:
     def add_clause(self, cnf_sentence):
         """
         This function adds a CNF clause to the knowledge base. Empty clauses are not allowed.
-        :param cnf_sentence: CNF clause in a tuple.
+        :param cnf_sentence: CNF clause in a set.
         :return: Nothing.
         """
         #if len(cnf_sentence) == 0:
         #    print("ERROR: Sentence add_clause -> can't add an empty clause")
-        if not isinstance(cnf_sentence, tuple):
-            print("ERROR: Sentence add_clause -> cnf_sentence must be a tuple")
-
-        for i in range(len(cnf_sentence)):
-            if not isinstance(cnf_sentence[i], int):
-                print("ERROR: Sentence add_clause -> only int type tuples allowed")
-
-            if abs(cnf_sentence[i]) > self.nbvar:
-                print("ERROR: Sentence add_clause -> trying to add" +
-                        cnf_sentence[i] + "variable, there are only" +
-                        self.nbvar + "variables")
-
-            if cnf_sentence[i] == 0:
-                print("ERROR: Sentence add_clause -> 0 clause not allowed")
 
         self.__insert(cnf_sentence)
 
-
-    def __insert(self, cnf_sentence, index=None):
+    def __insert(self, cnf_sentence):
         """
         Private method for inserting in list
         :param cnf_sentence:
         :return: ---
         """
-        if index is None:
-            self.clauses.append(cnf_sentence)
-        else:
-            self.clauses.insert(index, cnf_sentence)
+        self.clauses.append(cnf_sentence)
 
     def remove_clauses(self, clause):
         """
         Removes all clauses equal to the argument provided.
-        :param clause: Clause to eliminate in CNF tuple.
+        :param clause: Clause to eliminate in CNF set.
         :return: Nothing.
         """
-        if not isinstance(clause, tuple):
-            print('ERROR: Sentence remove_clauses -> clause must be tuple')
+        if not isinstance(clause, set):
+            print('ERROR: Sentence remove_clauses -> clause must be set')
 
         old_size = len(self)
 
-        self.clauses = list(filter(clause.__ne__, self.clauses))
+        self.clauses = [cl for cl in self.clauses if clause != cl]
 
         return len(self) < old_size
 
     def remove_clause(self, clause):
         """
-        Removes the clause provided in the argument. If clause is a tuple, it
+        Removes the clause provided in the argument. If clause is a set, it
         searches and deletes it. If clause is an integer, deletes the clause in
         that index.
-        :param clause: Either a CNF tuple or an integer.
-        :return: If the argument is a tuple, returns true or false if clause is removed or not. If the argument is an
-                    integer returns the removed CNF tuple.
+        :param clause: Either a CNF set or an integer.
+        :return: If the argument is a set, returns true or false if clause is removed or not. If the argument is an
+                    integer returns the removed CNF set.
         """
-        if isinstance(clause, tuple):
+        if isinstance(clause, set):
             if clause in self.clauses:
                 self.clauses.remove(clause)
                 return True
@@ -88,13 +70,13 @@ class Sentence:
             return self.clauses.pop(clause)
 
         else:
-            print('ERROR: Sentence remove_clause -> clause must be either an int or a tuple')
+            print('ERROR: Sentence remove_clause -> clause must be either an int or a set')
 
     def get_clause(self, index):
         """
         Returns the clause in the given index.
         :param index: Index of the clause, must be an integer.
-        :return: CNF tuple.
+        :return: CNF set.
         """
         if not isinstance(index, int):
             print('ERROR: Sentence get_clause -> index must be an integer')
@@ -126,21 +108,19 @@ class Sentence:
 
         for clause_index in range(len(self.clauses)):
             if variable in self.clauses[clause_index]:
-                clause = self.remove_clause(clause_index)
-                new_clause = [var for var in clause if var != variable]
-                new_clause = tuple(new_clause)
-                self.clauses.insert(clause_index, new_clause)
+                self.clauses[clause_index].remove(variable)
 
     def unit_variables(self):
         """
         Returns all unit variables in the knowledge base. Negation (-) is included
-        :return: List of CNF tuples.
+        :return: set of CNF sets.
         """
-        units = list()
+        units = set()
 
         for clause in self.clauses:
             if len(clause) == 1:
-                units.append(clause[0])
+                # units.append(list(clause)[0])
+                units.union(clause)
 
         return units
 
@@ -156,9 +136,8 @@ class Sentence:
             not found in the sentece). False if 'symbol' is not pure.
         """
         for clause in self:
-            for var in clause:
-                if var == -symbol:
-                    return False
+            if -symbol in clause:
+                return False
 
         return True
 
@@ -166,6 +145,7 @@ class Sentence:
         """
         Returns a list with all the pure symbols in the sentence. Negative
         values represent the negation of the a symbol.
+        :return: list of
         """
         findings = [None] * (self.nbvar+1)
         pure = [None] * (self.nbvar+1)
@@ -186,10 +166,17 @@ class Sentence:
         Clause might be either a clause or an index. If it is a clause it will check the first clause in knowledge base
         that match this one. If clause is an integer it will check if a clause in given index. Returns true if removed.
         :param variable: Integer.
-        :param clause: Tuple of integers.
+        :param clause: Set of integers.
         :return: Boolean.
         """
-        if isinstance(clause, tuple):
+        if isinstance(clause, set):
+            for cl in self:
+                if cl == clause:
+                    clause.remove(variable)
+                    return True
+
+            return False
+            """
             for clause_index in range(len(self.clauses)):
                 if clause == self.clauses[clause_index] and variable in self.clauses[clause_index]:
 
@@ -202,9 +189,16 @@ class Sentence:
                         return True
                     else:
                         return False
+            """
 
         if isinstance(clause, int):
-            clause_index = clause
+            clause = self.clauses[clause]
+            if cl == clause:
+                    clause.remove(variable)
+                    return True
+            else:
+                return False
+            """
             clause = self.remove_clause(clause_index)
             new_clause = [var for var in clause if var != variable]
             new_clause = tuple(new_clause)
@@ -213,19 +207,17 @@ class Sentence:
                 return True
             else:
                 return False
+            """
 
     @staticmethod
     def __is_subset(subclause, clause):
         """
         If subclause is a subset of clause, returns true
-        :param subclause: CNF tuple.
-        :param clause: CNF tuple.
+        :param subclause: CNF set.
+        :param clause: CNF set.
         :return: Boolean.
         """
-        if not isinstance(subclause, tuple) or not isinstance(clause, tuple):
-            print('ERROR: Sentence is_subset -> subclause and clause must be tuples')
-
-        return frozenset(subclause) <= frozenset(clause)
+        return subclause <= clause
 
     def is_satisfied_by(self, model):
         """
@@ -238,9 +230,7 @@ class Sentence:
             True if 'model' satisfies the sentence. False otherwise.
         """
         #print(model)
-        # TODO: empty clause
-        if not self.clauses:
-            print("EMPTY SENTENCE IN is_satisfied_by()")
+
         for clause in self:
             for var in clause:
                 if (var > 0 and model[var]) or (var < 0 and
@@ -264,7 +254,7 @@ class Sentence:
 
         """
         for clause in copy(self):
-            new_clause = list(clause)
+            new_clause = set(clause)
             add_new = True
             for var in clause:
                 if (var > 0 and model[var]) or (var < 0 and 
@@ -278,7 +268,9 @@ class Sentence:
                     new_clause.remove(var)
             self.remove_clause(clause)
             if add_new:
-                self.add_clause(tuple(new_clause))
+                self.add_clause(new_clause)
+
+        # TODO: remove supersets. here or in the beginning?
 
     def solve(self, solver):
         """
