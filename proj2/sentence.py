@@ -67,7 +67,6 @@ class Sentence:
 
         return len(self) < old_size
 
-
     def remove_clause(self, clause):
         """
         Removes the clause provided in the argument. If clause is a tuple, it
@@ -102,7 +101,6 @@ class Sentence:
 
         return self.clauses[index]
 
-
     # TODO: change name to 'has_empty_clause'
     def check_empty_clause(self):
         """
@@ -113,7 +111,6 @@ class Sentence:
             if len(clause) == 0:
                 return True
         return False
-
 
     def remove_variable(self, variable):
         """
@@ -134,7 +131,6 @@ class Sentence:
                 new_clause = tuple(new_clause)
                 self.clauses.insert(clause_index, new_clause)
 
-
     def unit_variables(self):
         """
         Returns all unit variables in the knowledge base. Negation (-) is included
@@ -147,7 +143,6 @@ class Sentence:
                 units.append(clause[0])
 
         return units
-
 
     def is_pure_symbol(self, symbol):
         """
@@ -167,7 +162,6 @@ class Sentence:
 
         return True
 
-
     def pure_symbols(self):
         """
         Returns a list with all the pure symbols in the sentence. Negative
@@ -185,7 +179,6 @@ class Sentence:
                         pure[abs(var)] = False  # not pure
 
         return [symbol for symbol in findings if symbol and pure[abs(symbol)]]
-
 
     def __remove_var_from_clause(self, variable, clause):
         """
@@ -221,7 +214,6 @@ class Sentence:
             else:
                 return False
 
-
     @staticmethod
     def __is_subset(subclause, clause):
         """
@@ -234,7 +226,6 @@ class Sentence:
             print('ERROR: Sentence is_subset -> subclause and clause must be tuples')
 
         return frozenset(subclause) <= frozenset(clause)
-
 
     def is_satisfied_by(self, model):
         """
@@ -259,7 +250,6 @@ class Sentence:
                 return False
 
         return True
-
 
     def simplify(self, model):
         """
@@ -290,7 +280,6 @@ class Sentence:
             if add_new:
                 self.add_clause(tuple(new_clause))
 
-
     def solve(self, solver):
         """
         Solves this sentence, using the specified solver class. By calling
@@ -305,7 +294,6 @@ class Sentence:
         """
         return solver.run(self.__deepcopy__())
 
-
     def __copy__(self):
         # TODO Test this
         new_kb = Sentence(self.nbvar)
@@ -314,7 +302,6 @@ class Sentence:
 
         return new_kb
 
-
     def __deepcopy__(self, memo=None):
         new_kb = Sentence(self.nbvar)
 
@@ -322,11 +309,9 @@ class Sentence:
 
         return new_kb
 
-
     def __iter__(self):
         self.__currclause = 0
         return self
-
 
     def __next__(self):
         if self.__currclause < len(self.clauses):
@@ -336,10 +321,8 @@ class Sentence:
         else:
             raise StopIteration()
 
-
     def __len__(self):
         return len(self.clauses)
-
 
     def __str__(self):
         if len(self.clauses) == 0:

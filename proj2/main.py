@@ -8,14 +8,13 @@ from dpll import DPLL
 # other modules
 import argparse
 import time
-from pprint import pprint
 
 
 parser = argparse.ArgumentParser(description='Solves Boolean Satisfiability Problems (SAT).')
 parser.add_argument('--gsat', '-gs', action='store_true', help='use GSAT')
 parser.add_argument('--wsat', '-ws', action='store_true', help='use WalkSAT')
 parser.add_argument('--dpll', '-dp', action='store_true', help='use DPLL algorithm')
-parser.add_argument('sentence', type=argparse.FileType('r'), nargs='+', \
+parser.add_argument('sentence', type=argparse.FileType('r'), nargs='+',
         help='a file in DIMASC format, containing a sentence')
 args = parser.parse_args()
 
@@ -66,29 +65,30 @@ if __name__ == "__main__":
             if walk.solution:
                 print("Satisfiable.")
                 iofiles.write_kb(filename_no_ext+".wsat.sol", sentence,
-                        greedy.solution, True, time_save)
+                        walk.solution, True, time_save)
             else:
                 print("No solution found.")
                 iofiles.write_kb(filename_no_ext+".wsat.sol", sentence,
-                        greedy.solution, None, time_save)
+                        walk.solution, None, time_save)
 
         if args.dpll:
             print('Solving with DPLL... ')
             start_time = time.time()
 
-            ret = DPLL().run(sentence, Model(sentence.nbvar))
+            dpll = DPLL()
+            dpll.run(sentence, Model(sentence.nbvar))
 
             print('Done.')
             time_save = time.time() - start_time
             print("DPLL time:", time_save, '\n')
-            if ret:
+            if dpll.solution:
                 print("Satisfiable.")
                 iofiles.write_kb(filename_no_ext+".dpll.sol", sentence,
-                        greedy.solution, True, time_save)
+                        dpll.solution, True, time_save)
             else:
                 print("Unsatisfiable.")
                 iofiles.write_kb(filename_no_ext+".dpll.sol", sentence,
-                        greedy.solution, False, time_save)
+                        dpll.solution, False, time_save)
 
 
     # write solutions to a file

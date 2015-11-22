@@ -13,7 +13,6 @@ class GSat:
         self.max_climb = max_climb
         self.solution = None
 
-
     def __randomize_variables(self):
         """ returns a list with a random model """
         var_list = list()
@@ -25,7 +24,6 @@ class GSat:
                 var_list.append(-(var+1))
 
         return var_list
-
 
     def __best_successor(self, var_values):
         """
@@ -61,7 +59,6 @@ class GSat:
 
         return aux_values, max_score
 
-
     def __satisfied_clauses(self, var_values):
         """
         Args:
@@ -89,7 +86,6 @@ class GSat:
                     break
 
         return score
-
 
     def solve(self):
         for res in range(self.restarts):

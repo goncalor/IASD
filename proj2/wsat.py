@@ -46,19 +46,16 @@ class WSat:
         return score
 
     def __random_clause(self):
-        # TODO select random clause from the clauses
         clause_nr = random.randint(0, len(self.sentence) - 1)
 
         return self.sentence.clauses[clause_nr]
 
     def __flip_variable(self):
-        # TODO return boolean to flip variable or not
         random_nr = random.random()
 
         return self.p > random_nr
 
     def __random_var_from_clause(self, clause):
-        # TODO select a random variable from a given clause
         var_index = random.randint(0, len(clause) - 1)
 
         return abs(clause[var_index])
@@ -89,7 +86,6 @@ class WSat:
         return aux_values
 
     def solve(self):
-        # TODO implement wsat main algorithm
         var_values = self.__randomize_variables()
 
         clause_nr = len(self.sentence)

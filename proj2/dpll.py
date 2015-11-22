@@ -1,6 +1,4 @@
-from model import Model
-from sentence import Sentence
-from copy import copy, deepcopy
+from copy import copy
 
 """
 Implements a DPLL SAT solver class.
@@ -25,11 +23,11 @@ Implements a DPLL SAT solver class.
 Φ ∧ l denotes the simplified result of substituting "true" for l in Φ.
 """
 
+
 class DPLL:
 
     def __init__(self):
         self.solution = None
-
 
     def run(self, sentence, model):
         """
@@ -50,8 +48,8 @@ class DPLL:
             #print("emplty clause")
             return False
 
-        new_model = deepcopy(model)
-        new_sentence = deepcopy(sentence)
+        new_model = copy(model)
+        new_sentence = copy(sentence)
 
         #print(new_sentence)
         # find unit clauses. assign values to them
@@ -89,8 +87,6 @@ class DPLL:
             #print("literals exhausted")
             return False
 
-
-        # TODO: check this
         return self.run(new_sentence, copy(new_model).assign(literal, True)) \
                 or self.run(new_sentence, copy(new_model).assign(literal,
                     False))

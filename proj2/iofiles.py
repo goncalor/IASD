@@ -1,6 +1,5 @@
 # our modules
 from sentence import Sentence
-from model import Model
 
 # python modules needed
 import os.path

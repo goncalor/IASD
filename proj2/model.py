@@ -11,12 +11,11 @@ class Model:
             variables should have values None, False or True.
         """
         if nvars:
-            self.values = [True] + [None]*nvars
+            self.values = [True] + [None] * nvars
         elif values:
             self.values = list([True] + values)
         else:
             raise Exception("Empty model")
-
 
     def flip(self, varnum):
         """
@@ -31,7 +30,6 @@ class Model:
         """
         self.values[varnum] = not self.values[varnum]
         return self.values[varnum]
-
 
     def assign(self, varnum, val):
         """
@@ -48,23 +46,18 @@ class Model:
         self.values[varnum] = val
         return self
 
-
     def next_unassigned(self):
         """ Returns the ID of the unassigned variable with the lowest ID. """
         return self.values.index(None)
 
-
     def get_numeric(self):
         return [i if self.values[i] else -i for i in range(1, len(self.values))]
 
-
     def __copy__(self):
         return Model(values=self.values[1:])
-
 
     def __getitem__(self, key):
         return self.values[key]
 
     def __str__(self):
         return str(self.get_numeric)
-
