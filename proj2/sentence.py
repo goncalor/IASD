@@ -276,6 +276,20 @@ class Sentence:
             self.remove_clause(clause)
             if add_new:
                 self.add_clause(tuple(new_clause))
+        
+        #self.__remove_supersets()
+
+    def __remove_supersets(self):
+        """ Removes clauses that are supersets of other clauses. """
+        laux = []
+
+        for clause_index in range(len(self)):
+            for clause_index2 in range(clause_index+1, len(self)):
+                if frozenset(self.clauses[clause_index]) <= frozenset(self.clauses[clause_index2]):
+                    laux.append(self.clauses[clause_index2])
+
+        for clause in laux:
+            self.remove_clause(clause)
 
     def solve(self, solver):
         """

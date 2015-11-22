@@ -87,6 +87,11 @@ class DPLL:
             #print("literals exhausted")
             return False
 
+        #if not sentence.clauses or not sentence.clauses[0]:
+        #    return False
+
+        #literal = abs(sentence.clauses[0][0])
+
         return self.run(new_sentence, copy(new_model).assign(literal, True)) \
                 or self.run(new_sentence, copy(new_model).assign(literal,
                     False))
