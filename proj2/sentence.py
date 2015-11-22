@@ -270,7 +270,18 @@ class Sentence:
             if add_new:
                 self.add_clause(new_clause)
 
-        # TODO: remove supersets. here or in the beginning?
+        self.__remove_supersets()
+
+    def __remove_supersets(self):
+        laux = []
+
+        for clause_index in range(len(self)):
+            for clause_index2 in range(clause_index+1, len(self)):
+                if self.clauses[clause_index] <= self.clauses[clause_index2]:
+                    laux.append(self.clauses[clause_index2])
+
+        for clause in laux:
+            self.remove_clause(clause)
 
     def solve(self, solver):
         """
