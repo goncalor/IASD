@@ -1,5 +1,5 @@
 # our modules
-from cnf_kb import CnfKb
+from sentence import Sentence
 from model import Model
 
 # python modules needed
@@ -11,7 +11,7 @@ def read_kb(filename):
     """
     Creates a knowledge base from file in DIMACS format.
     :param filename: File's relative address.
-    :return: CnfKb instance.
+    :return: Sentence instance.
     """
     if not os.path.isfile(filename):
         print('ERROR: iofiles read_kb -> ' + filename + ' not found')
@@ -29,7 +29,7 @@ def read_kb(filename):
     # example line: 'p cnf 5 3' --> 5 variables and 3 clauses
     (nbvar, nclauses)= [int(i) for i in line.split()[2:]]
 
-    new_kb = CnfKb(nbvar)
+    new_kb = Sentence(nbvar)
 
     # each of the next lines in the file represents a clause. each line ends
     # with a '0'. example line: ' 1 -5 4 0'
@@ -56,11 +56,11 @@ def write_kb(filename, kb, model, decision, time_):
     """
     Stores the solution into a DIMACS file. 
     :param filename: The name of the output file.
-    :param kb: CnfKb instance.
+    :param kb: Sentence instance.
     :return:  ---
     """
-    if not isinstance(kb, CnfKb):
-        print('ERROR: iofiles write_kb -> kb must be a CnfKb instance')
+    if not isinstance(kb, Sentence):
+        print('ERROR: iofiles write_kb -> clauses must be a Sentence instance')
 
     if not isinstance(filename, str):
         print('ERROR: iofiles write_kb -> filename must be a string')
@@ -75,7 +75,7 @@ def write_kb(filename, kb, model, decision, time_):
             solution_field = str(-1)
 
         variables_field = str(kb.nbvar) 
-        clauses_field = str(len(kb.kb))
+        clauses_field = str(len(kb.clauses))
 
         # write the solution line
         # s TYPE SOLUTION VARIABLES CLAUSES

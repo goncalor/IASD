@@ -1,5 +1,5 @@
 from model import Model
-from cnf_kb import CnfKb
+from sentence import Sentence
 from copy import copy, deepcopy
 
 """

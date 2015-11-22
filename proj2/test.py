@@ -1,7 +1,7 @@
 
 import copy
 
-from cnf_kb import CnfKb
+from sentence import Sentence
 from wsat import WSat
 import iofiles
 from gsat import GSat

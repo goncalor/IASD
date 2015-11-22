@@ -1,18 +1,18 @@
 from copy import copy, deepcopy
 
 
-class CnfKb:
+class Sentence:
 
     def __init__(self, nbvar):
         """
-        Initializes the kb as an empty list and sets the number of variables nbvar.
+        Initializes the clauses as an empty list and sets the number of variables nbvar.
         :param nbvar: Integer with the number of variables in the knowledge base.
         :return: ---
         """
         if not isinstance(nbvar, int):
-            print("ERROR: CnfKb CnfKb() -> nbvar must be an integer")
+            print("ERROR: Sentence Sentence() -> nbvar must be an integer")
 
-        self.kb = list()
+        self.clauses = list()
         self.nbvar = nbvar
 
     def add_clause(self, cnf_sentence):
@@ -22,21 +22,21 @@ class CnfKb:
         :return: Nothing.
         """
         #if len(cnf_sentence) == 0:
-        #    print("ERROR: CnfKb add_clause -> can't add an empty clause")
+        #    print("ERROR: Sentence add_clause -> can't add an empty clause")
         if not isinstance(cnf_sentence, tuple):
-            print("ERROR: CnfKb add_clause -> cnf_sentence must be a tuple")
+            print("ERROR: Sentence add_clause -> cnf_sentence must be a tuple")
 
         for i in range(len(cnf_sentence)):
             if not isinstance(cnf_sentence[i], int):
-                print("ERROR: CnfKb add_clause -> only int type tuples allowed")
+                print("ERROR: Sentence add_clause -> only int type tuples allowed")
 
             if abs(cnf_sentence[i]) > self.nbvar:
-                print("ERROR: CnfKb add_clause -> trying to add" +
+                print("ERROR: Sentence add_clause -> trying to add" +
                         cnf_sentence[i] + "variable, there are only" +
                         self.nbvar + "variables")
 
             if cnf_sentence[i] == 0:
-                print("ERROR: CnfKb add_clause -> 0 clause not allowed")
+                print("ERROR: Sentence add_clause -> 0 clause not allowed")
 
         self.__insert(cnf_sentence)
 
@@ -48,9 +48,9 @@ class CnfKb:
         :return: ---
         """
         if index is None:
-            self.kb.append(cnf_sentence)
+            self.clauses.append(cnf_sentence)
         else:
-            self.kb.insert(index, cnf_sentence)
+            self.clauses.insert(index, cnf_sentence)
 
     def remove_clauses(self, clause):
         """
@@ -59,11 +59,11 @@ class CnfKb:
         :return: Nothing.
         """
         if not isinstance(clause, tuple):
-            print('ERROR: CnfKb remove_clauses -> clause must be tuple')
+            print('ERROR: Sentence remove_clauses -> clause must be tuple')
 
         old_size = len(self)
 
-        self.kb = list(filter(clause.__ne__, self.kb))
+        self.clauses = list(filter(clause.__ne__, self.clauses))
 
         return len(self) < old_size
 
@@ -78,18 +78,18 @@ class CnfKb:
                     integer returns the removed CNF tuple.
         """
         if isinstance(clause, tuple):
-            if clause in self.kb:
-                self.kb.remove(clause)
+            if clause in self.clauses:
+                self.clauses.remove(clause)
                 return True
 
             else:
                 return False
 
         if isinstance(clause, int):
-            return self.kb.pop(clause)
+            return self.clauses.pop(clause)
 
         else:
-            print('ERROR: CnfKb remove_clause -> clause must be either an int or a tuple')
+            print('ERROR: Sentence remove_clause -> clause must be either an int or a tuple')
 
     def get_clause(self, index):
         """
@@ -98,9 +98,9 @@ class CnfKb:
         :return: CNF tuple.
         """
         if not isinstance(index, int):
-            print('ERROR: CnfKb get_clause -> index must be an integer')
+            print('ERROR: Sentence get_clause -> index must be an integer')
 
-        return self.kb[index]
+        return self.clauses[index]
 
 
     # TODO: change name to 'has_empty_clause'
@@ -122,17 +122,17 @@ class CnfKb:
         :return: ---
         """
         if not isinstance(variable, int):
-            print('ERROR: CnfKb pure_symbol -> variable must be of type int')
+            print('ERROR: Sentence pure_symbol -> variable must be of type int')
 
         if variable == 0 or abs(variable) > self.nbvar:
-            print('ERROR: CnfKb remove_clause -> variable is 0 or not defined')
+            print('ERROR: Sentence remove_clause -> variable is 0 or not defined')
 
-        for clause_index in range(len(self.kb)):
-            if variable in self.kb[clause_index]:
+        for clause_index in range(len(self.clauses)):
+            if variable in self.clauses[clause_index]:
                 clause = self.remove_clause(clause_index)
                 new_clause = [var for var in clause if var != variable]
                 new_clause = tuple(new_clause)
-                self.kb.insert(clause_index, new_clause)
+                self.clauses.insert(clause_index, new_clause)
 
 
     def unit_variables(self):
@@ -142,7 +142,7 @@ class CnfKb:
         """
         units = list()
 
-        for clause in self.kb:
+        for clause in self.clauses:
             if len(clause) == 1:
                 units.append(clause[0])
 
@@ -197,8 +197,8 @@ class CnfKb:
         :return: Boolean.
         """
         if isinstance(clause, tuple):
-            for clause_index in range(len(self.kb)):
-                if clause == self.kb[clause_index] and variable in self.kb[clause_index]:
+            for clause_index in range(len(self.clauses)):
+                if clause == self.clauses[clause_index] and variable in self.clauses[clause_index]:
 
                     clause = self.remove_clause(clause_index)
                     new_clause = [var for var in clause if var != variable]
@@ -231,7 +231,7 @@ class CnfKb:
         :return: Boolean.
         """
         if not isinstance(subclause, tuple) or not isinstance(clause, tuple):
-            print('ERROR: CnfKb is_subset -> subclause and clause must be tuples')
+            print('ERROR: Sentence is_subset -> subclause and clause must be tuples')
 
         return frozenset(subclause) <= frozenset(clause)
 
@@ -248,7 +248,7 @@ class CnfKb:
         """
         #print(model)
         # TODO: empty clause
-        if not self.kb:
+        if not self.clauses:
             print("EMPTY SENTENCE IN is_satisfied_by()")
         for clause in self:
             for var in clause:
@@ -308,17 +308,17 @@ class CnfKb:
 
     def __copy__(self):
         # TODO Test this
-        new_kb = CnfKb(self.nbvar)
+        new_kb = Sentence(self.nbvar)
 
-        new_kb.kb = copy(self.kb)
+        new_kb.clauses = copy(self.clauses)
 
         return new_kb
 
 
     def __deepcopy__(self, memo=None):
-        new_kb = CnfKb(self.nbvar)
+        new_kb = Sentence(self.nbvar)
 
-        new_kb.kb = deepcopy(self.kb, memo)
+        new_kb.clauses = deepcopy(self.clauses, memo)
 
         return new_kb
 
@@ -329,8 +329,8 @@ class CnfKb:
 
 
     def __next__(self):
-        if self.__currclause < len(self.kb):
-            tmp = self.kb[self.__currclause]
+        if self.__currclause < len(self.clauses):
+            tmp = self.clauses[self.__currclause]
             self.__currclause += 1
             return tmp
         else:
@@ -338,11 +338,11 @@ class CnfKb:
 
 
     def __len__(self):
-        return len(self.kb)
+        return len(self.clauses)
 
 
     def __str__(self):
-        if len(self.kb) == 0:
+        if len(self.clauses) == 0:
             return '""'
 
         s = ''

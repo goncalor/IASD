@@ -1,4 +1,4 @@
-from cnf_kb import CnfKb
+from sentence import Sentence
 from model import Model
 import random
 
@@ -6,8 +6,8 @@ import random
 class GSat:
 
     def __init__(self, kb, restarts, max_climb):
-        if not isinstance(kb, CnfKb):
-            print('ERROR: GSat GSat() -> kb must be a CnfKb instance')
+        if not isinstance(kb, Sentence):
+            print('ERROR: GSat GSat() -> clauses must be a Sentence instance')
         self.kb = kb
         self.restarts = restarts
         self.max_climb = max_climb
