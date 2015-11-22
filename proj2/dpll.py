@@ -85,11 +85,19 @@ class DPLL:
         # pick an unassigned literal from the model
         # TODO: accept other methods for choosing a literal
         # e.g.: use degree heuristic
-
-        if not sentence.clauses or not sentence.clauses[0]:
+        """
+        try:
+            literal = new_model.next_unassigned()
+            #print(literal)
+        except:
+            #print("literals exhausted")
             return False
-
-        literal = abs(sentence.clauses[0][0])
+        """
+        if not new_sentence.clauses or not new_sentence.clauses[0]:
+            return False
+        if new_model[abs(new_sentence.clauses[0][0])] != None:
+            print('cena')
+        literal = abs(new_sentence.clauses[0][0])
 
         return self.run(new_sentence, copy(new_model).assign(literal, True)) \
                 or self.run(new_sentence, copy(new_model).assign(literal,
