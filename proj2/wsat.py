@@ -1,4 +1,5 @@
 from cnf_kb import CnfKb
+from model import Model
 import random
 
 class WSat:
@@ -95,7 +96,7 @@ class WSat:
 
         for i in range(self.max_flips):
             if self.__satisfied_clauses(var_values) == clause_nr:
-                self.solution = [i > 0 for i in var_values]
+                self.solution = Model(values=[i > 0 for i in var_values])
                 return True
 
             clause = self.__random_clause()

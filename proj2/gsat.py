@@ -1,4 +1,5 @@
 from cnf_kb import CnfKb
+from model import Model
 import random
 
 
@@ -99,7 +100,7 @@ class GSat:
                 values, score = self.__best_successor(values)
 
                 if score == len(self.kb):
-                    self.solution = [i > 0 for i in values]
+                    self.solution = Model(values=[i > 0 for i in values])
                     return True
 
         return False

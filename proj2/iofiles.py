@@ -1,9 +1,10 @@
+# our modules
+from cnf_kb import CnfKb
+from model import Model
+
 # python modules needed
 import os.path
 from sys import exit
-
-# our modules
-from cnf_kb import CnfKb
 
 
 def read_kb(filename):
@@ -51,10 +52,10 @@ def read_kb(filename):
     return new_kb
 
 
-def write_kb(filename, kb):
+def write_kb(filename, kb, model, decision, time_):
     """
-    Writes knowledge base in DIMACS format file.
-    :param filename: Output file's relative address
+    Stores the solution into a DIMACS file. 
+    :param filename: The name of the output file.
     :param kb: CnfKb instance.
     :return:  ---
     """
@@ -64,31 +65,35 @@ def write_kb(filename, kb):
     if not isinstance(filename, str):
         print('ERROR: iofiles write_kb -> filename must be a string')
 
-    filename += '.txt'
-
     with open(filename, 'w') as f:
 
-        # write the first line of the DIMACS format
-        s = 'p cnf ' + str(kb.nbvar) + ' ' + str(len(kb))
+        if decision == True:
+            solution_field = str(1)
+        elif decision == False:
+            solution_field = str(0)
+        else:
+            solution_field = str(-1)
+
+        variables_field = str(kb.nbvar) 
+        clauses_field = str(len(kb.kb))
+
+        # write the solution line
+        # s TYPE SOLUTION VARIABLES CLAUSES
+        s = 's cnf ' + solution_field + ' ' + variables_field+ ' ' + clauses_field
         f.write(s + '\n')
 
-        # write the cnf sentences
-        for i in range(len(kb)):
-            clause = kb.get_clause(i)
+        # write the timing line
+        # t TYPE SOLUTION VARIABLES CLAUSES CPUSECS MEASURE1 ...
+        # "MEASURE1 is required (just print 0 to abstain)"
+        s = 't cnf ' + solution_field + ' ' + variables_field+ ' ' + \
+                clauses_field + ' ' + str(time_) + ' 0'
+        f.write(s + '\n')
 
-            # case it is an empty clause
-            if len(clause) == 0:
-                f.write('0')
-                continue
+        # write variable lines
+        # v V
+        if not model:
+            return
 
-            # case it is a 1 variable clause
-            s = str(clause[0])
-            if len(clause) == 1:
-                f.write(s + ' 0')
-                continue
+        for var in model.get_numeric():
+            f.write('v ' + str(var) + '\n')
 
-            # case clause has more than one variable
-            for j in range(1, len(clause)):
-                s += ' ' + str(clause[j])
-
-            f.write(s + ' 0' + '\n')

@@ -17,12 +17,12 @@ class Model:
         else:
             raise Exception("Empty model")
 
-    
+
     def flip(self, varnum):
         """
         Flips the value of a variable in the model. If no value has yet been
         assigned to that variable its new value will be True.
-        
+
         Args:
             varnum: The number of the variable to flip.
 
@@ -54,13 +54,17 @@ class Model:
         return self.values.index(None)
 
 
+    def get_numeric(self):
+        return [i if self.values[i] else -i for i in range(1, len(self.values))]
+
+
     def __copy__(self):
         return Model(values=self.values[1:])
 
 
     def __getitem__(self, key):
         return self.values[key]
-    
+
     def __str__(self):
-        return str(self.values[1:])
+        return str(self.get_numeric)
 

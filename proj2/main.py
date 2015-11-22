@@ -21,7 +21,6 @@ args = parser.parse_args()
 
 if __name__ == "__main__":
 
-
     # measure time
     start_time_program = time.time()
 
@@ -29,6 +28,7 @@ if __name__ == "__main__":
         print('Reading sentence from ' + f.name + '... ', end = '')
         sentence = iofiles.read_kb(f.name)
         print('Done.\n')
+        filename_no_ext = f.name[:f.name.rindex('.')]
 
         if args.gsat:
             print('Solving with GSAT... ')
@@ -38,13 +38,18 @@ if __name__ == "__main__":
             greedy.solve()
 
             print('Done.')
-            print("GSAT time:", time.time() - start_time, '\n')
+            time_save = time.time() - start_time
+            print("GSAT time:", time_save, '\n')
             #print(greedy.solution)
 
             if greedy.solution:
                 print("Satisfiable.")
+                iofiles.write_kb(filename_no_ext+".gsat.sol", sentence,
+                        greedy.solution, True, time_save)
             else:
-                print("Unsatisfiable.")
+                print("No solution found.")
+                iofiles.write_kb(filename_no_ext+".gsat.sol", sentence,
+                        greedy.solution, None, time_save)
 
         if args.wsat:
             print('Solving with WalkSAT... ')
@@ -54,13 +59,18 @@ if __name__ == "__main__":
             walk.solve()
 
             print('Done.')
-            print("WalkSAT time:", time.time() - start_time, '\n')
+            time_save = time.time() - start_time
+            print("WalkSAT time:", time_save, '\n')
             #print(walk.solution)
 
             if walk.solution:
                 print("Satisfiable.")
+                iofiles.write_kb(filename_no_ext+".wsat.sol", sentence,
+                        greedy.solution, True, time_save)
             else:
-                print("Unsatisfiable.")
+                print("No solution found.")
+                iofiles.write_kb(filename_no_ext+".wsat.sol", sentence,
+                        greedy.solution, None, time_save)
 
         if args.dpll:
             print('Solving with DPLL... ')
@@ -69,18 +79,20 @@ if __name__ == "__main__":
             ret = DPLL().run(sentence, Model(sentence.nbvar))
 
             print('Done.')
-            print("DPLL time:", time.time() - start_time, '\n')
+            time_save = time.time() - start_time
+            print("DPLL time:", time_save, '\n')
             if ret:
                 print("Satisfiable.")
+                iofiles.write_kb(filename_no_ext+".dpll.sol", sentence,
+                        greedy.solution, True, time_save)
             else:
                 print("Unsatisfiable.")
-
+                iofiles.write_kb(filename_no_ext+".dpll.sol", sentence,
+                        greedy.solution, False, time_save)
 
 
     # write solutions to a file
-    print('Preserving solutions... ', end = '')
-    # TODO: save solution
-    print('Done.')
+    print('Solutions were written to .sol files.')
 
     print("\nTotal time:", time.time() - start_time_program)
 
