@@ -33,7 +33,7 @@ if __name__ == "__main__":
             print('Solving with GSAT... ')
             start_time = time.time()
 
-            greedy = GSat(sentence, 5, 200)
+            greedy = GSat(sentence, 20, 50)
             greedy.solve()
 
             print('Done.')
@@ -54,7 +54,7 @@ if __name__ == "__main__":
             print('Solving with WalkSAT... ')
             start_time = time.time()
 
-            walk = WSat(sentence, 0.5, 1000)
+            walk = WSat(sentence, 0.4, 1000)
             walk.solve()
 
             print('Done.')
