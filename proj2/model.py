@@ -60,4 +60,4 @@ class Model:
         return self.values[key]
 
     def __str__(self):
-        return str(self.get_numeric)
+        return str(self.get_numeric())
