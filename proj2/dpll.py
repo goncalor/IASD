@@ -115,16 +115,13 @@ class DPLL:
         """
 
         if len(new_sentence.clauses) == 0:
-            self.solution = model
+            self.solution = new_model
             return True
         elif len(new_sentence.clauses[0]) == 0:
             return False
 
 
         literal = abs(new_sentence.clauses[0][0])
-
-        if new_model[literal] != None:
-            print('barraca')
 
         return self.run(new_sentence, copy(new_model).assign(literal, True)) \
                 or self.run(new_sentence, copy(new_model).assign(literal,

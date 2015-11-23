@@ -85,6 +85,14 @@ if __name__ == "__main__":
                 print("Satisfiable.")
                 iofiles.write_kb(filename_no_ext+".dpll.sol", sentence,
                         dpll.solution, True, time_save)
+                sol = dpll.solution.get_numeric()
+                print(sol)
+                walk = WSat(sentence, 0.5, 1000)
+                if walk.satisfied_clauses(sol) != len(sentence):
+                    print('solucao errada')
+                    exit()
+
+
             else:
                 print("Unsatisfiable.")
                 iofiles.write_kb(filename_no_ext+".dpll.sol", sentence,

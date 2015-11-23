@@ -59,6 +59,9 @@ class GSat:
 
         return aux_values, max_score
 
+    def satisfied_clauses(self, var_values):
+        return self.__satisfied_clauses(var_values)
+
     def __satisfied_clauses(self, var_values):
         """
         Args:

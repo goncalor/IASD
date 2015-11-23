@@ -23,6 +23,9 @@ class WSat:
 
         return var_list
 
+    def satisfied_clauses(self, var_values):
+        return self.__satisfied_clauses(var_values)
+
     def __satisfied_clauses(self, var_values):
         score = 0
         satisfied = 0
