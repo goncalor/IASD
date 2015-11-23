@@ -198,7 +198,6 @@ class Sentence:
                     removed_clause = self.remove_clause(clause_index)
                     new_clause = [var for var in removed_clause if var != variable]
                     new_clause = tuple(new_clause)
-                    #print('var', variable, 'clause', removed_clause, 'new_clause', new_clause)
                     self.__insert(new_clause, clause_index)
 
                     if len(new_clause) < len(clause):
@@ -256,7 +255,6 @@ class Sentence:
         Returns:
             True if 'model' satisfies the sentence. False otherwise.
         """
-        #print(model)
         for clause in self:
             for var in clause:
                 if (var > 0 and model[abs(var)]) or (var < 0 and
@@ -304,15 +302,12 @@ class Sentence:
             for var in new_clause:
                 if (var > 0 and model[abs(var)] == True) or (var < 0 and model[abs(var)] == False):
                     # clause is true
-                    #print('removi clause', var, clause)
                     if not already_removed:
                         self.remove_clause(clause)
                     else:
                         self.remove_clause(cl)
                     break
                 elif (var < 0 and model[abs(var)] == True) or (var > 0 and model[abs(var)] == False) and var in clause:
-                    #model[abs(var)] != None and var in clause:
-                    #print('removi var', var, clause)
                     if not already_removed:
                         cl = self.__remove_var_from_clause(var, clause)
                         already_removed = True
