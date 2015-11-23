@@ -90,7 +90,6 @@ if __name__ == "__main__":
                 iofiles.write_kb(filename_no_ext+".dpll.sol", sentence,
                         dpll.solution, False, time_save)
 
-
     # write solutions to a file
     print('Solutions were written to .sol files.')
 

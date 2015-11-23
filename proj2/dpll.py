@@ -40,16 +40,19 @@ class DPLL:
         Returns:
             True if the sentence is satisfiable. False otherwise.
         """
+        #print("sentence no inicio", sentence)
         #print(">> DPLL call")
         if sentence.is_satisfied_by(model):
             self.solution = model
             return True
         if sentence.check_empty_clause():
-            #print("emplty clause")
             return False
 
         new_model = copy(model)
         new_sentence = copy(sentence)
+
+        #print('cena', sentence)
+        #print('modelo', model.values)
 
         #print(new_sentence)
         # find unit clauses. assign values to them
@@ -60,8 +63,10 @@ class DPLL:
                     new_model.assign(abs(clause[0]), clause[0] > 0)
                     # remove the unit clause
                     new_sentence.remove_clause(clause)
-                elif new_model[abs(clause[0])] and clause[0] < 0 \
-                        or not new_model[abs(clause[0])] and clause[0] > 0:
+                elif (new_model[abs(clause[0])] and clause[0] < 0) \
+                        or (not new_model[abs(clause[0])] and clause[0] > 0):
+                    #print('foi daqui')
+                    #print(clause)
                     return False
 
 
@@ -69,15 +74,30 @@ class DPLL:
 
         # find pure symbols. assign values to them
         for symbol in new_sentence.pure_symbols():
+
             if new_model[abs(symbol)] != None:
                 #print("SCREEEEEEEEEEEEEEEEEEAM!\nSCREEEEEEEEEEEEEEEEEEAM")
                 continue
             new_model.assign(abs(symbol), symbol > 0)
 
+
+
         #print(new_model)
         #print(new_sentence)
         # simplify the sentence according to the new model
         new_sentence.simplify(new_model)
+
+        """
+        # debug
+        for clause in new_sentence:
+            for var in clause:
+                if new_model[abs(var)] != None:
+                    print(new_sentence)
+                    print(new_model.values)
+                    exit()
+        #
+        """
+
         #print(new_sentence)
 
         #print(new_model, len(new_sentence), end=' ')
@@ -93,11 +113,18 @@ class DPLL:
             #print("literals exhausted")
             return False
         """
-        if not new_sentence.clauses or not new_sentence.clauses[0]:
+
+        if len(new_sentence.clauses) == 0:
+            self.solution = model
+            return True
+        elif len(new_sentence.clauses[0]) == 0:
             return False
-        if new_model[abs(new_sentence.clauses[0][0])] != None:
-            print('cena')
+
+
         literal = abs(new_sentence.clauses[0][0])
+
+        if new_model[literal] != None:
+            print('barraca')
 
         return self.run(new_sentence, copy(new_model).assign(literal, True)) \
                 or self.run(new_sentence, copy(new_model).assign(literal,

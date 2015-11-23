@@ -77,12 +77,13 @@ class Sentence:
                     integer returns the removed CNF tuple.
         """
         if isinstance(clause, tuple):
-            if clause in self.clauses:
-                self.clauses.remove(clause)
-                return True
+            clause_set = set(clause)
+            for cl in self.clauses:
+                if clause_set == set(cl):
+                    self.clauses.remove(cl)
+                    return True
 
-            else:
-                return False
+            return False
 
         if isinstance(clause, int):
             return self.clauses.pop(clause)
@@ -175,8 +176,8 @@ class Sentence:
                 if findings[abs(var)] == None:  # first time found
                     findings[abs(var)] = var
                     pure[abs(var)] = True
-                elif pure[abs(var)] and findings[abs(var)] + var == 0:
-                        pure[abs(var)] = False  # not pure
+                elif pure[abs(var)] and (findings[abs(var)] + var == 0):
+                    pure[abs(var)] = False  # not pure
 
         return [symbol for symbol in findings if symbol and pure[abs(symbol)]]
 
@@ -190,19 +191,35 @@ class Sentence:
         :return: Boolean.
         """
         if isinstance(clause, tuple):
+            clause_set = set(clause)
             for clause_index in range(len(self.clauses)):
-                if clause == self.clauses[clause_index] and variable in self.clauses[clause_index]:
+                if clause_set == set(self.clauses[clause_index]) and variable in self.clauses[clause_index]:
 
-                    clause = self.remove_clause(clause_index)
-                    new_clause = [var for var in clause if var != variable]
+                    removed_clause = self.remove_clause(clause_index)
+                    new_clause = [var for var in removed_clause if var != variable]
                     new_clause = tuple(new_clause)
+                    #print('var', variable, 'clause', removed_clause, 'new_clause', new_clause)
                     self.__insert(new_clause, clause_index)
 
                     if len(new_clause) < len(clause):
-                        return True
+                        return new_clause
                     else:
-                        return False
+                        return clause
 
+        """
+        for clause_index in range(len(self.clauses)):
+            if clause == self.clauses[clause_index]:
+                poped_clause = self.clauses.pop(clause_index)
+                new_clause = [var for var in poped_clause if var != variable]
+                new_clause = tuple(new_clause)
+                #self.__insert(new_clause, clause_index)
+                self.clauses.insert(clause_index, new_clause)
+
+                if len(new_clause) < len(poped_clause):
+                    return True
+                else:
+                    return False
+        """
         if isinstance(clause, int):
             clause_index = clause
             clause = self.remove_clause(clause_index)
@@ -213,6 +230,8 @@ class Sentence:
                 return True
             else:
                 return False
+
+
 
     @staticmethod
     def __is_subset(subclause, clause):
@@ -240,7 +259,7 @@ class Sentence:
         #print(model)
         for clause in self:
             for var in clause:
-                if (var > 0 and model[var]) or (var < 0 and
+                if (var > 0 and model[abs(var)]) or (var < 0 and
                         model[abs(var)] == False):
                     break   # this clause is true. check next clause
             else:
@@ -260,6 +279,7 @@ class Sentence:
         Returns:
 
         """
+        """
         for clause in copy(self):
             new_clause = list(clause)
             add_new = True
@@ -276,6 +296,38 @@ class Sentence:
             self.remove_clause(clause)
             if add_new:
                 self.add_clause(tuple(new_clause))
+        """
+
+        for clause in copy(self.clauses):
+            already_removed = False
+            new_clause = list(clause)
+            for var in new_clause:
+                if (var > 0 and model[abs(var)] == True) or (var < 0 and model[abs(var)] == False):
+                    # clause is true
+                    #print('removi clause', var, clause)
+                    if not already_removed:
+                        self.remove_clause(clause)
+                    else:
+                        self.remove_clause(cl)
+                    break
+                elif (var < 0 and model[abs(var)] == True) or (var > 0 and model[abs(var)] == False) and var in clause:
+                    #model[abs(var)] != None and var in clause:
+                    #print('removi var', var, clause)
+                    if not already_removed:
+                        cl = self.__remove_var_from_clause(var, clause)
+                        already_removed = True
+                    else:
+                        cl = self.__remove_var_from_clause(var, cl)
+        """
+        # debug
+        for clause in self.clauses:
+            for var in clause:
+                if model[abs(var)] != None:
+                    print(self.clauses)
+                    print(model.values)
+                    exit()
+        #
+        """
 
         #self.__remove_supersets()
 
@@ -309,7 +361,7 @@ class Sentence:
         # TODO Test this
         new_kb = Sentence(self.nbvar)
 
-        new_kb.clauses = copy(self.clauses)
+        new_kb.clauses = list(self.clauses)
 
         return new_kb
 
