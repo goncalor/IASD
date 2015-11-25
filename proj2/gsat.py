@@ -1,17 +1,20 @@
-from cnf_kb import CnfKb
+from sentence import Sentence
+from model import Model
 import random
 
 
 class GSat:
 
     def __init__(self, kb, restarts, max_climb):
-        if not isinstance(kb, CnfKb):
-            print('ERROR: GSat GSat() -> kb must be a CnfKb instance')
+        if not isinstance(kb, Sentence):
+            print('ERROR: GSat GSat() -> clauses must be a Sentence instance')
         self.kb = kb
         self.restarts = restarts
         self.max_climb = max_climb
+        self.solution = None
 
     def __randomize_variables(self):
+        """ returns a list with a random model """
         var_list = list()
 
         for var in range(0, self.kb.nbvar):
@@ -23,6 +26,13 @@ class GSat:
         return var_list
 
     def __best_successor(self, var_values):
+        """
+        Args:
+            var_values: A model
+        Returns:
+            A model that is a best successor of the 'var_values' model. And the
+            score of that model. Returns a tuple.
+        """
         var_scores = list()
 
         for var in range(self.kb.nbvar):
@@ -34,6 +44,8 @@ class GSat:
 
             var_scores.append(self.__satisfied_clauses(temp_values))
 
+        # TODO: this can be made more efficient. but must think about
+        # randomization (or remove it)
         max_score = max(var_scores)
 
         highest_scores = list()
@@ -47,7 +59,16 @@ class GSat:
 
         return aux_values, max_score
 
+    def satisfied_clauses(self, var_values):
+        return self.__satisfied_clauses(var_values)
+
     def __satisfied_clauses(self, var_values):
+        """
+        Args:
+            var_values: A model
+        Returns:
+            The number of satisfied clauses.
+        """
         score = 0
         satisfied = 0
 
@@ -70,7 +91,6 @@ class GSat:
         return score
 
     def solve(self):
-
         for res in range(self.restarts):
             values = self.__randomize_variables()
 
@@ -79,6 +99,7 @@ class GSat:
                 values, score = self.__best_successor(values)
 
                 if score == len(self.kb):
-                    return values
+                    self.solution = Model(values=[i > 0 for i in values])
+                    return True
 
-        return None
+        return False

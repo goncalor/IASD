@@ -1,16 +1,16 @@
+# our modules
+from sentence import Sentence
+
 # python modules needed
 import os.path
 from sys import exit
-
-# our modules
-from cnf_kb import CnfKb
 
 
 def read_kb(filename):
     """
     Creates a knowledge base from file in DIMACS format.
     :param filename: File's relative address.
-    :return: CnfKb instance.
+    :return: Sentence instance.
     """
     if not os.path.isfile(filename):
         print('ERROR: iofiles read_kb -> ' + filename + ' not found')
@@ -28,7 +28,7 @@ def read_kb(filename):
     # example line: 'p cnf 5 3' --> 5 variables and 3 clauses
     (nbvar, nclauses)= [int(i) for i in line.split()[2:]]
 
-    new_kb = CnfKb(nbvar)
+    new_kb = Sentence(nbvar)
 
     # each of the next lines in the file represents a clause. each line ends
     # with a '0'. example line: ' 1 -5 4 0'
@@ -51,44 +51,48 @@ def read_kb(filename):
     return new_kb
 
 
-def write_kb(filename, kb):
+def write_kb(filename, kb, model, decision, time_):
     """
-    Writes knowledge base in DIMACS format file.
-    :param filename: Output file's relative address
-    :param kb: CnfKb instance.
+    Stores the solution into a DIMACS file. 
+    :param filename: The name of the output file.
+    :param kb: Sentence instance.
     :return:  ---
     """
-    if not isinstance(kb, CnfKb):
-        print('ERROR: iofiles write_kb -> kb must be a CnfKb instance')
+    if not isinstance(kb, Sentence):
+        print('ERROR: iofiles write_kb -> clauses must be a Sentence instance')
 
     if not isinstance(filename, str):
         print('ERROR: iofiles write_kb -> filename must be a string')
 
-    filename += '.txt'
-
     with open(filename, 'w') as f:
 
-        # write the first line of the DIMACS format
-        s = 'p cnf ' + str(kb.nbvar) + ' ' + str(len(kb))
+        if decision == True:
+            solution_field = str(1)
+        elif decision == False:
+            solution_field = str(0)
+        else:
+            solution_field = str(-1)
+
+        variables_field = str(kb.nbvar) 
+        clauses_field = str(len(kb.clauses))
+
+        # write the solution line
+        # s TYPE SOLUTION VARIABLES CLAUSES
+        s = 's cnf ' + solution_field + ' ' + variables_field+ ' ' + clauses_field
         f.write(s + '\n')
 
-        # write the cnf sentences
-        for i in range(len(kb)):
-            clause = kb.get_clause(i)
+        # write the timing line
+        # t TYPE SOLUTION VARIABLES CLAUSES CPUSECS MEASURE1 ...
+        # "MEASURE1 is required (just print 0 to abstain)"
+        s = 't cnf ' + solution_field + ' ' + variables_field+ ' ' + \
+                clauses_field + ' ' + str(time_) + ' 0'
+        f.write(s + '\n')
 
-            # case it is an empty clause
-            if len(clause) == 0:
-                f.write('0')
-                continue
+        # write variable lines
+        # v V
+        if not model:
+            return
 
-            # case it is a 1 variable clause
-            s = str(clause[0])
-            if len(clause) == 1:
-                f.write(s + ' 0')
-                continue
+        for var in model.get_numeric():
+            f.write('v ' + str(var) + '\n')
 
-            # case clause has more than one variable
-            for j in range(1, len(clause)):
-                s += ' ' + str(clause[j])
-
-            f.write(s + ' 0' + '\n')
