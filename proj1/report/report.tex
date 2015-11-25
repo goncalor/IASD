@@ -1,0 +1,130 @@
+\documentclass[a4paper]{article}
+
+\usepackage{tecnico_relatorio}
+
+%\usepackage{textcomp}
+\usepackage[hypcap]{caption} % makes \ref point to top of figures and tables
+%\usepackage{rotating}
+\usepackage{float}
+%\usepackage[nottoc]{tocbibind}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+%\usepackage[justification=centering]{caption}
+%\usepackage{listings}
+\usepackage{indentfirst} % indent first paragraph in section
+\usepackage{geometry}	% margins
+
+\begin{document}
+
+	\trSetImage{img/tecnico_logo}{6cm} % Logotipo do Técnico
+	\trSetCourse{Mestrado em Engenharia Electrotécnica \\e de Computadores}
+	\trSetSubject{Inteligência Artificial e Sistemas de Decisão}
+	%\trSetType{2ª Parte}
+	\trSetTitle{Projecto I}
+	\trSetBoxStyle{0.3}
+	\trSetGroupNo{Grupo 28}
+	\trSetAuthorNr{2}
+	\trSetAuthors
+	{
+		\begin{center}
+			Gonçalo Ribeiro
+
+			73294
+		\end{center}
+	}{
+		\begin{center}
+			Henrique Carvalho
+
+			70327
+		\end{center}
+	}
+
+	\trSetProfessor{Prof. Luís Manuel Marques Custódio}
+	\trMakeCover
+
+	%\tableofcontents
+	%\pagenumbering{gobble}
+	%\pagebreak
+
+	\pagenumbering{arabic}
+	\setcounter{page}{1}
+
+	\section{Problem Description}
+    
+    \subsection{Problem's States}
+     
+    The graph is represented as a class with nodes and edges. Both edges and nodes have references to each other. Each node has an ID, a neighbours (edges) list and a field to hold information. Each edge has two references to the nodes that it connects and also an information field. The information field of the edge is another class which contains the duration, transport type, cost, etc.
+    
+    The fringe is a list of tuples. Each tuple has a reference to a node and the value of the evaluation function that node was discovered with. The fringe is sorted by evaluation function value. The node with the lowest evaluation function value is always at the end of the list. This way the remove operation is $O(1)$. Removing from the beginning of the list is $O(n)$ in Python.
+    
+    In the initial state all nodes have no parent. In the goal state the goal node has a parent and a path connects it to the initial node (and this path should be optimal).
+ 
+    \subsection{Operators}
+    
+    The operators used to change between the problem states are the remove and expand operators. These operators allow us to explore the  problem domain. Another operator verifies is the current state is the goal state.
+    
+    The problem initializers set the fringe, the parents of the nodes and the best costs known to the reach each node. The fringe is initialized with the initial node and 0 cost. The parents are set as unknown, because initially there are no paths found. The costs are set to infinity so they are always greater than any other cost found during the search (except if a node is unreachable).
+    
+    The remove operator is used to remove the next node to explore from the fringe. It removes the lowest cost (or evaluation function) first, but it could be used in a DFS if the fringe is set up as a LIFO or in a BFS if set as a FIFO.
+    The expand operator explores the node removed from the fringe. It adds to the fringe all newfound nodes and sorts them by cost (price or time) -- or by the evaluation function, for informed search. The fringe must be sorted for the Uniform-Cost Search (UCS) algorithm.
+    The \texttt{isgoal} operator checks if the removed node is the goal node. If we have the goal node, it uses the path operator to generate the path for the output file.
+    
+    \subsection{Path Cost}
+    The informed method implemented is the A*. So 3 costs are stored: $f$ (evaluation), $g$ (cost) and $h$ (heuristic). $f$ is stored in the fringe (in a tuple), the cost is stored in a list (known\_costs) and h in the \texttt{Heuristic} class. The heuristic can be obtain with the function \texttt{heurIST\_it()}.
+    
+    \section{Informed and Uninformed Algorithms}
+    
+    \subsection{Uninformed}
+    
+	For the uninformed algorithm, Uniform-Cost Search was chosen. The Depth-First Search algorithm did not guarantee an optimal solution, so it was immediately discarded. Breadth-First Search did not consider the edges' cost, thus it also did not guarantee an optimal solution.
+	The Uniform-Cost Search is the simplest method that guarantees optimal solution. For that reason we chose it. It has exponential complexity, so it can use a lot of memory for big graphs. A bidirectional method, the UCS starting in the start node and in the goal node could also be implemented since we know the goal's location. It's complexity would be de square root of the exponential.
+    Opting for the UCS was a management decision, since the bidirectional method's implementation would be more time consuming. The informed method was prioritized because better results could be achieved with the right heuristic.
+    
+    
+    \subsection{Informed}
+    
+    The informed algorithm implemented is the A* algorithm. It is a UCS extension but it considers a evaluation function instead of only the cost function. For this effect a heuristic is need to estimate the node's cost to the goal.
+	As all examples used to test the algorithm were small, there were no memory bounds imposed on A*. Furthermore Python was used to write the algorithms, which memory management not as easy as other languages because it is opaque and offers little tools to work around it.
+    
+    \section{Domain-Independent and Domain-Dependent Code}
+    
+    The \texttt{Graph}, \texttt{Node} and \texttt{Edge} classes are domain independent. They can be used to represent any undirected graph. The edge information e kept in a domain-dependent \texttt{EdgeInfo} class. The \texttt{info} field for each \texttt{Edge} has an \texttt{EdgeInfo} object in this case.
+    
+    The generic search function (\texttt{generic\_function()}) is domain-independent. The operators that allow to manage the fringe are domain-dependent. These operators are passed by reference to \texttt{generic\_function()}. This function does not need to know anything about the management of the fringe. If the set of operators makes sense the search will be performed correctly.
+    
+    \section{Heuristic}
+    The heuristic consisted in relaxing the problem for each client. The non usable edges were removed from a client personalized graph with each restriction. For each pair of nodes, all non optimal edges were removed. For example, if there were two nodes connecting A and B and price was to be optimized, the most expensive connection would be removed.
+    With the relaxed graph built, the heuristic function consisted of finding the optimal path from a given node to the goal without considering the delays of waiting for the next transport.
+    
+    \section{Uninformed vs Informed Search}
+    From the provided tests, the biggest one will be as the most representative of the algorithms performance.
+    For "input50", the informed algorithm took 0.35 seconds to present the solution and the uninformed took 0.30 seconds. It takes more time with the informed algorithm because the heuristic used is still of exponential complexity. Furthermore, it does not give always the optimal solution.
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+\end{document}
