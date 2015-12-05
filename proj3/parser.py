@@ -87,6 +87,7 @@ class BNParser:
                 if len(line) == 1:
                     raise Exception('unexpected number of values for parameter '
                             'parents')
+                # no need to check if parent does not exist. is checked later
                 parents = line[1:]
             else:
                 if not (name and values):   # these are mandatory
@@ -183,7 +184,11 @@ class BNParser:
         # calculate the number of rows the table must have to be complete
         expected_nr_rows = len(self.parsed[varname]['values'])
         for parent in self.parsed[varname]['parents']:
-            expected_nr_rows *= len(self.parsed[parent]['values'])
+            try:
+                expected_nr_rows *= len(self.parsed[parent]['values'])
+            except KeyError:
+                raise Exception("unknown parent '" + parent + "' for '" +
+                        varname + "'") from None
 
         # expected number of items is (nr parents + 1 (variable itself) + 1
         # (probability of this combination)) * nr rows
@@ -221,6 +226,10 @@ class BNParser:
             prev_line_pos = self.file_.tell()   # save current file position
             line = self.file_.readline()    # advance position by one line
 
+        # file ended before the needed number of items was found
+        raise Exception("problematic CPT table for '" + varname + "': some rows "
+                "are missing or a row is malformed")
+
 
     def __check_table(self, varname, lst, items_per_row):
         """
@@ -247,16 +256,17 @@ class BNParser:
                         "invalid probability")
 
             # check if values are in the parents' domains
-            for parent, val in zip(self.parsed[varname]['parents'], chunk[-2]):
+            for parent, val in zip(self.parsed[varname]['parents'], chunk[:-2]):
                 if val not in self.parsed[parent]['values']:
                     raise Exception("problematic CPT table for '" + varname +
-                            "': " + val + " is not in the domain of '" +
+                            "': '" + val + "' is not in the domain of '" +
                             parent + "'")
 
             # check if the value for 'varname' is in its domain
             if chunk[-2] not in self.parsed[varname]['values']:
                     raise Exception("problematic CPT table for '" + varname +
-                            "': " + chunk[-2] + " is not in the domain")
+                            "': '" + chunk[-2] + "' is not in the domain of '" +
+                            varname + "'")
 
             # all checks done. add this entry to table
             table[tuple(chunk[:-1])] = float(chunk[-1])
