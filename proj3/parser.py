@@ -1,4 +1,4 @@
-
+import pprint
 
 class BNParser:
     """
@@ -275,6 +275,28 @@ class BNParser:
         line = line.strip()    # remove leading and trailing whitespace
         line = line.split('#', 1)[0]    # remove comments
         return line
+
+
+    def __str__(self):
+        # print without showind duplicate entries for aliases
+        d = {}
+        for k in self.parsed:
+            if k == self.parsed[k]['alias']:
+                continue
+            d[k] = self.parsed[k]
+
+        return str(d)
+
+
+    def __repr__(self):
+        # print without showind duplicate entries for aliases
+        d = {}
+        for k in self.parsed:
+            if k == self.parsed[k]['alias']:
+                continue
+            d[k] = self.parsed[k]
+
+        return pprint.pformat(d)
 
 
 class QueryParser:

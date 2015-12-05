@@ -23,8 +23,7 @@ if __name__ == "__main__":
     bnp.parse()
     print('Done.\n')
 
-    pprint(bnp.parsed)
-
+    pprint(bnp)
 
     # write solutions to a file
     print('Solution written to .sol file.')
