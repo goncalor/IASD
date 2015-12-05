@@ -1,4 +1,5 @@
 # our created modules
+from parser import BNParser, QueryParser
 
 # other modules
 import argparse
@@ -15,8 +16,10 @@ if __name__ == "__main__":
     # measure time
     start_time_program = time.time()
 
-    print('Reading sentence from ' + args.bayesnet.name + '... ', end = '')
+    print('Parsing Bayesian network from ' + args.bayesnet.name + '... ', end = '')
     # TODO
+    bnp = BNParser(args.bayesnet)
+    bnp.parse()
     print('Done.\n')
 
 
