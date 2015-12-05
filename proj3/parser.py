@@ -23,10 +23,13 @@ class BNParser:
         Parses the file, obtaining all information from it and reporting
         erros if the file is malformed.
         """
-        for line in self.file_:
+        line = self.file_.readline()
+        while line != '':
             line = self.__prepare_line(line)
+            print(line)
 
             if not line:    # empty line
+                line = self.file_.readline()
                 continue    # parse next line
 
             if line.lower() == "var":
@@ -39,6 +42,8 @@ class BNParser:
                 print(line)
                 raise Exception("unexpected line '" + line + "'")
 
+            line = self.file_.readline()
+
 
     def __parse_var(self):
         """
@@ -48,12 +53,13 @@ class BNParser:
         found_values = False
 
         prev_line_pos = self.file_.tell()
-        for line in self.file_:
+        line = self.file_.readline()
+        while line != '':
             line = self.__prepare_line(line)
-
             print(line)
 
             if not line:    # empty line
+                line = self.file_.readline()
                 continue    # parse next line
 
             line = line.split()
@@ -74,6 +80,7 @@ class BNParser:
                 return
 
             prev_line_pos = self.file_.tell()
+            line = self.file_.readline()
 
 
     def __parse_cpt(self):
