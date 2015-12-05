@@ -27,20 +27,16 @@ class BNParser:
         line = self.file_.readline()
         while line != '':
             line = self.__prepare_line(line)
-            print(line)
 
             if not line:    # empty line
                 line = self.file_.readline()
                 continue    # parse next line
 
             if line.lower() == "var":
-                print('call var')
                 self.__parse_var()
             elif line.lower() == 'cpt':
-                print('call cpt')
                 self.__parse_cpt()
             else:
-                print(line)
                 raise Exception("unexpected line '" + line + "'")
 
             line = self.file_.readline()
@@ -63,7 +59,6 @@ class BNParser:
         line = self.file_.readline()
         while line != '':
             line = self.__prepare_line(line)
-            print(line)
 
             if not line:    # empty line
                 line = self.file_.readline()
@@ -132,7 +127,6 @@ class BNParser:
         line = self.file_.readline()
         while line != '':
             line = self.__prepare_line(line)
-            print(line)
 
             if not line:    # empty line
                 line = self.file_.readline()
@@ -152,7 +146,6 @@ class BNParser:
                 if not var:
                     raise Exception("missing 'var' definition before 'table' "
                     "definition in CPT")
-                print('call table')
                 table = self.__parse_table(var, line)
                 self.parsed[var]['cpt'] = table
             else:
@@ -203,15 +196,14 @@ class BNParser:
         # process lines
         if len(lst) == expected_nr_items:
             # all items found. check validity
-            return self.__check_table(var, lst, items_per_row)
+            return self.__check_table(varname, lst, items_per_row)
         elif len(lst) > expected_nr_items:
-            raise Exception('problematic table in CPT')
+            raise Exception("problematic CPT table for '" + varname + "'")
 
         prev_line_pos = self.file_.tell()   # save current file position
         line = self.file_.readline()
         while line != '':
             line = self.__prepare_line(line)
-            print(line)
 
             if not line:    # empty line
                 line = self.file_.readline()
@@ -222,20 +214,20 @@ class BNParser:
 
             if len(lst) == expected_nr_items:
                 # all items found. check validity
-                return self.__check_table(var, lst, items_per_row)
+                return self.__check_table(varname, lst, items_per_row)
             elif len(lst) > expected_nr_items:
-                raise Exception('problematic table in CPT')
+                raise Exception("problematic CPT table for '" + varname + "'")
 
             prev_line_pos = self.file_.tell()   # save current file position
             line = self.file_.readline()    # advance position by one line
 
 
-    def __check_table(self, var, lst, items_per_row):
+    def __check_table(self, varname, lst, items_per_row):
         """
         Checks if a table is valid. Builds a representation for it.
 
         Args:
-            var: the variable this table refers to.
+            varname: the variable this table refers to.
             lst: a list representing the table. This list is built by
                 __parse_table().
             items_per_row: the number of items in a row of the table.
@@ -248,13 +240,26 @@ class BNParser:
         """
         table = {}
         for chunk in self.__chunk(lst, items_per_row):
-            print(chunk)
             try:
-                chunk[-1] = float(chunk[-1])
+                float(chunk[-1])
             except ValueError:
-                raise Exception('problematic table in CPT: invalid probability')
+                raise Exception("problematic CPT table for '" + varname + "': "
+                        "invalid probability")
 
-            # TODO: build table and check values are in the domains
+            # check if values are in the parents' domains
+            for parent, val in zip(self.parsed[varname]['parents'], chunk[-2]):
+                if val not in self.parsed[parent]['values']:
+                    raise Exception("problematic CPT table for '" + varname +
+                            "': " + val + " is not in the domain of '" +
+                            parent + "'")
+
+            # check if the value for 'varname' is in its domain
+            if chunk[-2] not in self.parsed[varname]['values']:
+                    raise Exception("problematic CPT table for '" + varname +
+                            "': " + chunk[-2] + " is not in the domain")
+
+            # all checks done. add this entry to table
+            table[tuple(chunk[:-1])] = float(chunk[-1])
 
         return table
 
