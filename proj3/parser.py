@@ -98,6 +98,13 @@ class BNParser:
                 self.parsed[name] = {'alias': alias, 'parents': parents,
                         'values': values, 'cpt': cpt}
 
+                # create an alias for the name
+                if alias:
+                    if alias in self.parsed:
+                        raise Exception("alias '" + alias + "' already exists")
+
+                    self.parsed[alias] = self.parsed[name]
+
                 # undo last readline(). needed so that self.parse() continues on
                 # the correct line, instead of skipping the current line that
                 # was read by self._parse_var() "by mistake"
