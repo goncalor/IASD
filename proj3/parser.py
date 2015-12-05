@@ -37,7 +37,6 @@ class BNParser:
                 self.__parse_var()
             elif line.lower() == 'cpt':
                 print('call cpt')
-                return
                 self.__parse_cpt()
             else:
                 print(line)
@@ -50,8 +49,6 @@ class BNParser:
         """
         Starts parsing a VAR, starting at the line following a 'VAR' line.
         """
-        found_name = False
-        found_values = False
         name = ''
         alias = ''
         parents = []
@@ -74,9 +71,11 @@ class BNParser:
                 if len(line) != 2:
                     raise Exception('unexpected number of values for parameter'
                             'name')
-                if name or name in self.parsed:
+                if name:
                     raise Exception("redefinition of a variables's name: '" +
-                            name + "'")
+                            name + "' --> '" + line[1] + "'")
+                if line[1] in self.parsed:
+                    raise Exception("redefinition of variable '" + line[1] + "'")
                 name = line[1]
             elif keyword == 'values':
                 values = line[1:]
@@ -119,7 +118,41 @@ class BNParser:
         """
         Starts parsing a CPT, starting at the line following a 'CPT' line.
         """
-        pass
+        var = ''
+
+        prev_line_pos = self.file_.tell()   # save current file position
+        line = self.file_.readline()
+        while line != '':
+            line = self.__prepare_line(line)
+            print(line)
+
+            if not line:    # empty line
+                line = self.file_.readline()
+                continue    # parse next line
+
+            line = line.split()
+            keyword = line[0].lower()
+            if keyword == 'var':
+                if len(line) != 2:
+                    raise Exception('unexpected number of values for parameter'
+                            'var')
+                if line[1] not in self.parsed:
+                    raise Exception("undefined reference to variable '" +
+                            line[1] + "'")
+                var = line[1]
+            elif keyword == 'table':
+                pass
+            else:
+                raise
+
+                # undo last readline(). needed so that self.parse() continues on
+                # the correct line, instead of skipping the current line that
+                # was read by self._parse_var() "by mistake"
+                self.file_.seek(prev_line_pos)
+                return
+
+            prev_line_pos = self.file_.tell()   # save current file position
+            line = self.file_.readline()    # advance position by one line
 
 
     def __prepare_line(self, line):
