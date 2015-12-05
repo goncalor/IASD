@@ -37,6 +37,7 @@ class BNParser:
                 self.__parse_var()
             elif line.lower() == 'cpt':
                 print('call cpt')
+                return
                 self.__parse_cpt()
             else:
                 print(line)
@@ -51,8 +52,13 @@ class BNParser:
         """
         found_name = False
         found_values = False
+        name = ''
+        alias = ''
+        parents = []
+        values = []
+        cpt = {}
 
-        prev_line_pos = self.file_.tell()
+        prev_line_pos = self.file_.tell()   # save current file position
         line = self.file_.readline()
         while line != '':
             line = self.__prepare_line(line)
@@ -65,22 +71,41 @@ class BNParser:
             line = line.split()
             keyword = line[0].lower()
             if keyword == 'name':
-                found_name = True
+                if len(line) != 2:
+                    raise Exception('unexpected number of values for parameter'
+                            'name')
+                if name or name in self.parsed:
+                    raise Exception("redefinition of a variables's name: '" +
+                            name + "'")
+                name = line[1]
             elif keyword == 'values':
-                found_values = True
-                pass
+                values = line[1:]
             elif keyword == 'alias':
-                pass
+                if len(line) != 2:
+                    raise Exception('unexpected number of values for parameter'
+                            'alias')
+                alias = line[1]
             elif keyword == 'parents':
-                pass
+                if len(line) == 1:
+                    raise Exception('unexpected number of values for parameter'
+                            'parents')
+                parents = line[1:]
             else:
-                if not (found_name and found_values):   # these are mandatory
+                if not (name and values):   # these are mandatory
                     raise Exception('name or values missing in VAR definition')
+
+                # save the parsed information
+                self.parsed[name] = {'alias': alias, 'parents': parents,
+                        'values': values, 'cpt': cpt}
+
+                # undo last readline(). needed so that self.parse() continues on
+                # the correct line, instead of skipping the current line that
+                # was read by self._parse_var() "by mistake"
                 self.file_.seek(prev_line_pos)
                 return
 
-            prev_line_pos = self.file_.tell()
-            line = self.file_.readline()
+            prev_line_pos = self.file_.tell()   # save current file position
+            line = self.file_.readline()    # advance position by one line
 
 
     def __parse_cpt(self):

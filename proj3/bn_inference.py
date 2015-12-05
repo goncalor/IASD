@@ -4,6 +4,7 @@ from parser import BNParser, QueryParser
 # other modules
 import argparse
 import time
+from pprint import pprint
 
 parser = argparse.ArgumentParser(description='Probabilistic reasoner based on Bayesian networks.')
 parser.add_argument('bayesnet', type=argparse.FileType('r'), help='an input file where the Bayesian network is defined')
@@ -21,6 +22,8 @@ if __name__ == "__main__":
     bnp = BNParser(args.bayesnet)
     bnp.parse()
     print('Done.\n')
+
+    pprint(bnp.parsed)
 
 
     # write solutions to a file
