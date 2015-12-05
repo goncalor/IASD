@@ -1,0 +1,6 @@
+# This input is the example given with the assignment specifications
+
+# Query definition
+QUERY Burglary
+# evidence definition
+EVIDENCE 2 JohnCalls T MaryCalls T
