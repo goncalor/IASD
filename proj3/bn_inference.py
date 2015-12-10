@@ -1,5 +1,6 @@
 # our created modules
 from parser import BNParser, QueryParser
+from bayesnet import BayesNet
 
 # other modules
 import argparse
@@ -18,12 +19,22 @@ if __name__ == "__main__":
     start_time_program = time.time()
 
     print('Parsing Bayesian network from ' + args.bayesnet.name + '... ', end = '')
-    # TODO
     bnp = BNParser(args.bayesnet)
     bnp.parse()
     print('Done.\n')
 
     pprint(bnp)
+
+    # TODO read query. substitute aliases by names or vice versa
+
+    # create factors from parsed data
+    # obtain query, evidence
+    # compute hidden variables
+    # variable elimination
+
+    bn = BayesNet(bnp.parsed)
+    ppd = bn.ppd([], {'Burglary': 't'})
+
 
     # write solutions to a file
     print('Solution written to .sol file.')
