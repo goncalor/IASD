@@ -317,6 +317,66 @@ class BNParser:
 
 class QueryParser:
 
-    def __init__(self):
-        pass
+    def __init__(self, bn, f):
 
+        self.bn = bn
+        self.f = f
+
+        self.__var = ''
+        self.__evidence = {}
+
+
+    def parse(self):
+
+        # get over the initial lines
+        for line in self.f:
+            words = line.split()
+            if words and not words[0] == '#':
+                break
+
+        if words[0] != 'QUERY':
+            raise Exception("First line of file corrupted, Expected 'Query', found " + words[0])
+
+        if (words[1] not in self.bn) and (words[1] not in self.bn.net['alias']):
+            raise Exception('Var to query not in Bayes Network :' + line )
+
+        if len(words) > 2:
+            raise Exception('Too many words for Query variable line ', words)
+
+        self.__var = words[1]
+
+        # get over all the other comments and white lines
+        for line in self.f:
+            words = line.split()
+            if words and not words[0] == '#':
+                break
+
+        # if something other than EVIDENCE is found
+        if words[0] != 'EVIDENCE':
+            raise Exception("Evidence line of file corrupted, Expected 'Query', found " + words[0])
+
+        # if a number of evidences is not found next
+        try:
+            n_evidence = int(words[1])
+        except ValueError:
+            raise Exception("Evidence line corrupted, number of evidence not found")
+
+        if len(words) != 2 + 2 * n_evidence:
+            raise Exception("Evidence line corrupted, unexpected length")
+
+        for i in range(2, len(words), 2):
+            if (words[i] not in self.bn) and (words[i] not in self.bn.net['alias']):
+                raise Exception("Evidence line corrupted, variable " + words[i] + ' not found')
+
+            self.__evidence[words[i]] = {'value' : words[i+1]}
+
+
+    def get_evidence(self):
+        if not self.__var:
+            raise Exception('Parse before getting evidence')
+        return self.__evidence
+
+    def get_var(self):
+        if not self.__var:
+            raise Exception('Parse before getting variable')
+        return self.__var
