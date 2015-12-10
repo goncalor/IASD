@@ -264,9 +264,14 @@ class BNParser:
 
             # check if the value for 'varname' is in its domain
             if chunk[-2] not in self.parsed[varname]['values']:
-                    raise Exception("problematic CPT table for '" + varname +
-                            "': '" + chunk[-2] + "' is not in the domain of '" +
-                            varname + "'")
+                raise Exception("problematic CPT table for '" + varname +
+                        "': '" + chunk[-2] + "' is not in the domain of '" +
+                        varname + "'")
+
+            # check if this is a repeated row in the table
+            if tuple(chunk[:-1]) in table:
+                raise Exception("problematic CPT table for '" + varname +
+                        "': there are repeated rows")
 
             # all checks done. add this entry to table
             table[tuple(chunk[:-1])] = float(chunk[-1])
