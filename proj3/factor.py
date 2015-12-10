@@ -3,14 +3,15 @@ from itertools import product
 
 class Factor:
 
-    def __init__(self, vars_, vardomain):
+    def __init__(self, bayesnet, vars_, vardomain):
         self.vars_ = list(vars_)
+        self.table = {}
 
+        # build the probability table for this factor
+        for entry in product(*vardomain):
+            self.table[entry] = bayesnet[vars_[-1]]['cpt'][entry]
 
-
-
-
-
+        print(self.table)
 
 
     def join(self, factors, evidence):

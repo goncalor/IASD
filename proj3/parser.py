@@ -8,6 +8,7 @@ class BNParser:
         - VAR definition always comes before its CPT (conditional probability
           table)
         - In CPT definitions 'var' always comes before 'table'
+        - Variables are case sensitive
     """
 
     def __init__(self, f):

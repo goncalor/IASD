@@ -37,7 +37,11 @@ class BayesNet:
             # add this variables' domain, or value from evidence if available
             dom += [self.net[k]['values'] if k not in evidence else
                     [evidence[k]]]
-            print(k, dom)
-            factors.append(Factor(parents + [k], dom))
+            #print(k, dom)
+            factors.append(Factor(self, parents + [k], dom))
 
         print(factors)
+
+
+    def __getitem__(cls, varname):
+        return cls.net[varname]
