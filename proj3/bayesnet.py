@@ -1,4 +1,6 @@
 from factor import Factor
+from itertools import product
+from collections import OrderedDict
 
 class BayesNet:
 
@@ -37,10 +39,27 @@ class BayesNet:
             # add this variables' domain, or value from evidence if available
             dom += [self.net[k]['values'] if k not in evidence else
                     [evidence[k]]]
+
+            # the variables for this factor are the parents of the variable and
+            # the variable
+            vars_ = parents + [k]
+            # build the probability table for this factor
+            table = {}
+            for row in product(*dom):
+                table[row] = self[vars_[-1]]['cpt'][row]
+
             #print(k, dom)
-            factors.append(Factor(self, parents + [k], dom))
+            factors.append(Factor(OrderedDict(zip(vars_, dom)), table))
 
         print(factors)
+
+        # debug
+        tmp = []
+        for factor in factors:
+            if 'Burglary' in factor:
+                tmp.append(factor)
+        #print(tmp)
+        print(Factor.join(tmp))
 
 
     def __getitem__(cls, varname):
