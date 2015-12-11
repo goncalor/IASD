@@ -57,12 +57,27 @@ class Factor:
                 table[row] *= factor[foreign_row]
                 #print(factor[foreign_row])
         #pprint(table)
-
         return Factor(vars_, table)
 
 
     def eliminate(self, var):
-        pass
+
+        new_table = {}
+        index = list(self.vars_.keys()).index(var)
+
+        for row in self.table:
+            new_row = self.__tuple_remove(row, index)
+            if new_row not in new_table:
+                new_table[new_row] = self.table[row]
+            else:
+                new_table[new_row] += self.table[row]
+
+        del self.vars_[var]
+        self.table = new_table
+
+
+    def __tuple_remove(self, tup, index):
+        return tuple(list(tup).pop(index))
 
 
     def __contains__(self, key):
