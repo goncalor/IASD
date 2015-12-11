@@ -26,9 +26,6 @@ class BayesNet:
 
         # build a list with the initial factors
         for k in self.net:
-            if k == self.net[k]['alias']:    # skip aliases
-                continue
-
             parents = self.net[k]['parents']
 
             # build a list with the domains of the parents

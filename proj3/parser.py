@@ -42,6 +42,24 @@ class BNParser:
 
             line = self.file_.readline()
 
+        # remove the aliases
+        net = {}
+        # TODO
+        self.aliases = {}    # convert alias to name
+        for k in self.parsed:
+            if k == self.parsed[k]['alias']:
+                continue
+            net[k] = self.parsed[k]
+            self.aliases[self.parsed[k]['alias']] = k
+
+        for k in net:
+            del net[k]['alias']
+
+        self.parsed = net
+        pprint.pprint(self.parsed)
+        print(self.aliases)
+
+
 
     def __parse_var(self):
         """
@@ -294,25 +312,11 @@ class BNParser:
 
 
     def __str__(self):
-        # print without showind duplicate entries for aliases
-        d = {}
-        for k in self.parsed:
-            if k == self.parsed[k]['alias']:
-                continue
-            d[k] = self.parsed[k]
-
-        return str(d)
+        return str(self.parsed)
 
 
     def __repr__(self):
-        # print without showind duplicate entries for aliases
-        d = {}
-        for k in self.parsed:
-            if k == self.parsed[k]['alias']:
-                continue
-            d[k] = self.parsed[k]
-
-        return pprint.pformat(d)
+        return pprint.pformat(self.parsed)
 
 
 class QueryParser:
