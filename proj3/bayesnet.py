@@ -74,7 +74,7 @@ class BayesNet:
             for factor in factors:
                 if var in factor:
                     subset.append(factor)
-            print("subset", subset)
+            #print("subset", subset)
             new_factor = Factor.join(subset)
 
             for i in subset:

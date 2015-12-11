@@ -44,7 +44,6 @@ class BNParser:
 
         # remove the aliases
         net = {}
-        # TODO
         self.aliases = {}    # convert alias to name
         for k in self.parsed:
             if k == self.parsed[k]['alias']:
@@ -59,6 +58,12 @@ class BNParser:
         pprint.pprint(self.parsed)
         print(self.aliases)
 
+        # rename parents who are using an alias
+        for value in self.parsed.values():
+            for parent_index, str_ in zip(range(len(value['parents'])),
+                    value['parents']):
+                if str_ in self.aliases:
+                    value['parents'][parent_index] = self.aliases[str_]
 
 
     def __parse_var(self):
