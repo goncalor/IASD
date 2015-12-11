@@ -10,11 +10,13 @@ bnparser = BNParser(bnfile)
 
 bnparser.parse()
 
-bn = BayesNet(bnparser.parsed)
+qparser = QueryParser(bnparser, qfile)
 
-qparser = QueryParser(bn.net, qfile)
+print('dicionario', bnparser.parsed)
 
 qparser.parse()
+
+
 
 print(qparser.get_var())
 print(qparser.get_evidence())

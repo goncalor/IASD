@@ -55,8 +55,8 @@ class BNParser:
             del net[k]['alias']
 
         self.parsed = net
-        pprint.pprint(self.parsed)
-        print(self.aliases)
+        #pprint.pprint(self.parsed)
+        #print(self.aliases)
 
         # rename parents who are using an alias
         for value in self.parsed.values():
@@ -328,8 +328,8 @@ class QueryParser:
 
     def __init__(self, bn, f):
 
-        self.bn = bn
-        self.f = f
+        self.__bn = bn
+        self.__f = f
 
         self.__var = ''
         self.__evidence = {}
@@ -338,7 +338,7 @@ class QueryParser:
     def parse(self):
 
         # get over the initial lines
-        for line in self.f:
+        for line in self.__f:
             words = line.split()
             if words and not words[0] == '#':
                 break
@@ -346,7 +346,7 @@ class QueryParser:
         if words[0] != 'QUERY':
             raise Exception("First line of file corrupted, Expected 'Query', found " + words[0])
 
-        if (words[1] not in self.bn) and (words[1] not in self.bn.net['alias']):
+        if (words[1] not in self.__bn.parsed) and (words[1] not in self.__bn.parsed['alias']):
             raise Exception('Var to query not in Bayes Network :' + line )
 
         if len(words) > 2:
@@ -355,7 +355,7 @@ class QueryParser:
         self.__var = words[1]
 
         # get over all the other comments and white lines
-        for line in self.f:
+        for line in self.__f:
             words = line.split()
             if words and not words[0] == '#':
                 break
@@ -374,8 +374,19 @@ class QueryParser:
             raise Exception("Evidence line corrupted, unexpected length")
 
         for i in range(2, len(words), 2):
-            if (words[i] not in self.bn) and (words[i] not in self.bn.net['alias']):
+            if words[i] in self.__bn.aliases:
+                words[i] = self.__bn.aliases[words[i]]
+            elif (words[i] not in self.__bn.parsed):
                 raise Exception("Evidence line corrupted, variable " + words[i] + ' not found')
+
+            found_value = False
+            for value in self.__bn.parsed[words[i]]['values']:
+                if words[i+1].casefold() == value.casefold():
+                    words[i+1] = value
+                    found_value = True
+
+            if not found_value:
+                raise Exception("Evidence line corrupted, variable value " + words[i+1] + ' not found')
 
             self.__evidence[words[i]] = {'value' : words[i+1]}
 
