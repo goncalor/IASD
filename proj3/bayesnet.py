@@ -54,12 +54,37 @@ class BayesNet:
             print(factors)
 
         # debug
-        tmp = []
-        for factor in factors:
-            if 'Burglary' in factor:
-                tmp.append(factor)
+        #tmp = []
+        #for factor in factors:
+        #    if 'Burglary' in factor:
+        #        tmp.append(factor)
         #print(tmp)
-        print(Factor.join(tmp))
+        #newfactor = Factor.join(tmp)
+        #print(newfactor)
+        #newfactor.eliminate('Burglary')
+        #print(newfactor)
+
+        hidden_vars = set(self.net.keys()) - set(query) - set(evidence)
+        hidden_vars = list(hidden_vars)
+        print(hidden_vars)
+
+        # TODO apply an ordering function
+        ordering = hidden_vars
+
+        for var in ordering:
+            # join and sum factors that include var
+            subset = []
+            for factor in factors:
+                if var in factor:
+                    subset.append(factor)
+            print("subset", subset)
+            new_factor = Factor.join(subset)
+
+            for i in subset:
+                factors.remove(i)
+            factors.append(new_factor)
+
+        print("factors", factors)
 
 
     def __getitem__(cls, varname):

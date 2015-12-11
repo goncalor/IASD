@@ -14,7 +14,7 @@ class Factor:
         """
         self.vars_ = vars_
         self.table = table
-        print(self.table)
+        #print(self.table)
 
 
     @classmethod
@@ -33,7 +33,7 @@ class Factor:
         # store all unique variables and their domains
         for factor in factors:
             vars_.update(factor.vars_)
-        print(vars_)
+        #print(vars_)
 
         # initialise table for the new factor. initialisation is to 1 because
         # the entries will later be involved in products
@@ -44,7 +44,7 @@ class Factor:
         # store the index in the tuples of the table that correspond to each
         # variable
         var_index = dict(zip(list(vars_.keys()), list(range(len(vars_.keys())))))
-        print(var_index)
+        #print(var_index)
 
         # compute each of the rows in the table of the factor
         for row in table:
