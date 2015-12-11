@@ -61,7 +61,6 @@ class Factor:
 
 
     def eliminate(self, var):
-
         new_table = {}
         index = list(self.vars_.keys()).index(var)
 
@@ -77,7 +76,9 @@ class Factor:
 
 
     def __tuple_remove(self, tup, index):
-        return tuple(list(tup).pop(index))
+        lst = list(tup)
+        del lst[index]
+        return tuple(lst)
 
 
     def __contains__(self, key):
