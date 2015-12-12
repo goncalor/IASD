@@ -11,7 +11,7 @@ class BayesNet:
             bayesnet: A dictionary containing the description of a Bayesian network.
         """
         self.net = bayesnet
-        self.verbose = verbose
+        self.step_by_step = ''
 
 
     def ppd(self, query, evidence):
@@ -47,27 +47,43 @@ class BayesNet:
 
             factors.append(Factor(OrderedDict(zip(vars_, dom)), table))
 
-        if self.verbose:
-            print(factors)
-
         hidden_vars = set(self.net.keys()) - set(query) - set(evidence)
         hidden_vars = list(hidden_vars)
 
         # TODO apply an ordering function
         ordering = hidden_vars
 
+        step_nr = 0
         for var in ordering:
+            self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
+            step_nr += 1
+
             # join and sum factors that include var
             subset = []
             for factor in factors:
                 if var in factor:
                     subset.append(factor)
+
+            self.step_by_step += '\n\tJoin ' + str(subset)
+            for fac in subset:
+                self.step_by_step += '\n\n\t\t' + str(list(fac.vars_.keys()))
+                for row in fac.table:
+                    self.step_by_step += '\n\t\t' + str(row) + ' ' + str(fac.table[row])
+
             new_factor = Factor.join(subset)
             new_factor.eliminate(var)
 
             for i in subset:
                 factors.remove(i)
             factors.append(new_factor)
+
+            self.step_by_step += '\n\n\t\tNew Factor: '
+            for row in new_factor.table:
+                    #print('\n\t\t' + str(row), str(fac.table[row]))
+                    self.step_by_step += '\n\t\t\t' + str(row) + ' ' + str(new_factor.table[row])
+
+        self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
+        #print('\nsolucao step by step:\n\n', self.step_by_step)
 
         final_factor = Factor.join(factors)
 
@@ -80,11 +96,13 @@ class BayesNet:
         for row in ppd_table:
             ppd_table[row] = ppd_table[row] / norm_constant
 
+        #print('ppd table', ppd_table)
+
         # remove evidence columns
         for var in evidence:
             final_factor.eliminate(var)
 
-        print(final_factor)
+        #print(final_factor)
         return ppd_table
 
 

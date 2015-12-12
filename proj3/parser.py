@@ -338,6 +338,9 @@ class QueryParser:
         self.__var = ''
         self.__evidence = {}
 
+        self.query_str = ''
+        self.evidence_str = ''
+
 
     def parse(self):
 
@@ -357,6 +360,7 @@ class QueryParser:
             raise Exception('Too many words for Query variable line ', words)
 
         self.__var = words[1]
+        self.query_str = line
 
         # get over all the other comments and white lines
         for line in self.__f:
@@ -392,7 +396,9 @@ class QueryParser:
             if not found_value:
                 raise Exception("Evidence line corrupted, variable value " + words[i+1] + ' not found')
 
-            self.__evidence[words[i]] = {'value' : words[i+1]}
+            self.__evidence[words[i]] = words[i+1]
+
+        self.evidence_str = line
 
 
     def get_evidence(self):
@@ -404,3 +410,37 @@ class QueryParser:
         if not self.__var:
             raise Exception('Parse before getting variable')
         return self.__var
+
+
+class SolWriter:
+
+    def __init__(self, in_file_name):
+        banana_split = in_file_name.split('.')
+
+        f_name = ''
+        for word in banana_split:
+            if word == 'in':
+                break
+            f_name += word + '.'
+        f_name += 'sol'
+
+        self.__f = open(f_name, mode='w')
+
+    def write_sol(self, sol, query_string, evidence_string, step_by_step=None):
+        self.__f.write(query_string)
+        self.__f.write(evidence_string)
+        sol_str = 'QUERY_DIST'
+
+        self.__f.write(sol_str)
+
+
+        if step_by_step:
+            self.__f.write('\n')
+            self.__f.write('##########STEPS##########')
+
+            for line in sol:
+                self.__f.write(line)
+
+    def close_file(self):
+        self.__f.close()
+

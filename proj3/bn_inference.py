@@ -1,5 +1,5 @@
 # our created modules
-from parser import BNParser, QueryParser
+from parser import BNParser, QueryParser, SolWriter
 from bayesnet import BayesNet
 
 # other modules
@@ -23,9 +23,14 @@ if __name__ == "__main__":
     bnp.parse()
     print('Done.\n')
 
-    pprint(bnp)
+    #pprint(bnp)
 
     # TODO read query. substitute aliases by names or vice versa
+
+    qparser = QueryParser(bnp, args.query)
+    qparser.parse()
+    evidence = qparser.get_evidence()
+    vartoinf = qparser.get_var()
 
     # create factors from parsed data
     # obtain query, evidence
@@ -33,11 +38,23 @@ if __name__ == "__main__":
     # variable elimination
 
     bn = BayesNet(bnp.parsed)
-    ppd = bn.ppd(['Burglary'], {'JohnCalls': 't', 'MaryCalls': 't'})
 
+
+    #ppd = bn.ppd(vartoinf, evidence)
+    ppd = bn.ppd('Burglary', {'JohnCalls': 't', 'MaryCalls': 't'})
+
+    print('ppd', ppd)
+
+    sol_write = SolWriter(args.query.name)
+    if args.verbose:
+        sol_write.write_sol(ppd, qparser.query_str, qparser.evidence_str, bn.step_by_step)
+    else:
+        sol_write.write_sol(ppd, qparser.query_str, qparser.evidence_str)
+    sol_write.close_file()
 
     # write solutions to a file
     print('Solution written to .sol file.')
 
     print("\nTotal time:", time.time() - start_time_program)
+
 
