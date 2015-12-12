@@ -69,11 +69,19 @@ class BayesNet:
                 factors.remove(i)
             factors.append(new_factor)
 
-        print(new_factor)
-        print(factors)
-        factors = [Factor.join(factors)]
-        print(factors)
-        print(factors[0])
+        final_factor = Factor.join(factors)
+
+        norm_constant = 0
+        for row in final_factor.table:
+            norm_constant += final_factor[row]
+        
+        print(norm_constant)
+
+        ppd_table = final_factor.table  # aliasing
+        for row in ppd_table:
+            ppd_table[row] = ppd_table[row] / norm_constant
+
+        print(ppd_table)
 
 
     def __getitem__(cls, varname):
