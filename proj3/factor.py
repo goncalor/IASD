@@ -85,6 +85,10 @@ class Factor:
         return cls.table[row]
 
 
+    def __len__(self):
+        return len(self.vars_)
+
+
     def __iter__(self):
         self.itercurrent = 0
         self.iterlst = list(self.vars_.keys())

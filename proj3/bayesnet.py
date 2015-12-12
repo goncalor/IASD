@@ -71,17 +71,21 @@ class BayesNet:
 
         final_factor = Factor.join(factors)
 
+        # build the final, normalized table
         norm_constant = 0
         for row in final_factor.table:
             norm_constant += final_factor[row]
-        
-        print(norm_constant)
 
         ppd_table = final_factor.table  # aliasing
         for row in ppd_table:
             ppd_table[row] = ppd_table[row] / norm_constant
 
-        print(ppd_table)
+        # remove evidence columns
+        for var in evidence:
+            final_factor.eliminate(var)
+
+        print(final_factor)
+        return ppd_table
 
 
     def __getitem__(cls, varname):
