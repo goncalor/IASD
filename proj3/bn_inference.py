@@ -23,8 +23,6 @@ if __name__ == "__main__":
     bnp.parse()
     print('Done.\n')
 
-    #pprint(bnp)
-
     # TODO read query. substitute aliases by names or vice versa
 
     qparser = QueryParser(bnp, args.query)

@@ -79,7 +79,6 @@ class BayesNet:
             self.__add_new_factor_verbose(new_factor)
 
         self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
-        #print('\nsolucao step by step:\n\n', self.step_by_step)
 
         final_factor = Factor.join(factors)
 
@@ -97,7 +96,6 @@ class BayesNet:
         for row in ppd_table:
             ppd_table[row] = ppd_table[row] / norm_constant
 
-        #print('ppd table', ppd_table)
 
         return ppd_table
 
