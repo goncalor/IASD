@@ -5,7 +5,6 @@ from bayesnet import BayesNet
 # other modules
 import argparse
 import time
-from pprint import pprint
 
 parser = argparse.ArgumentParser(description='Probabilistic reasoner based on Bayesian networks.')
 parser.add_argument('bayesnet', type=argparse.FileType('r'), help='an input file where the Bayesian network is defined')

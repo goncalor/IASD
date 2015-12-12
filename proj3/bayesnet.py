@@ -78,14 +78,24 @@ class BayesNet:
 
             self.__add_new_factor_verbose(new_factor)
 
-        self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
+        #self.__add_factor_table_verbose(factors)
 
         final_factor = Factor.join(factors)
+
+        self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
 
         # remove evidence columns
         for var in evidence:
             if var not in query:
                 final_factor.eliminate(var)
+                self.step_by_step += '\n\n\tEliminate Evidence ' + str(var)
+
+
+        step_nr += 1
+        self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(list(final_factor.vars_))
+        self.step_by_step += '\n\n\t\t' + str(list(final_factor.vars_.keys()))
+        for row in new_factor.table:
+            self.step_by_step += '\n\t\t' + str(row) + ' ' + str(new_factor.table[row])
 
         # build the final, normalized table
         norm_constant = 0

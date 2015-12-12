@@ -353,7 +353,7 @@ class QueryParser:
         if words[0] != 'QUERY':
             raise Exception("First line of file corrupted, Expected 'Query', found " + words[0])
 
-        if (words[1] not in self.__bn.parsed) and (words[1] not in self.__bn.parsed['alias']):
+        if (words[1] not in self.__bn.parsed) and (words[1] not in self.__bn.aliases):
             raise Exception('Var to query not in Bayes Network :' + line )
 
         if len(words) > 2:
@@ -378,6 +378,9 @@ class QueryParser:
         except ValueError:
             raise Exception("Evidence line corrupted, number of evidence not found")
 
+        if n_evidence < 0:
+            raise Exception("Evidence line corrupted, evidence number must be non negative")
+
         if len(words) != 2 + 2 * n_evidence:
             raise Exception("Evidence line corrupted, unexpected length")
 
@@ -397,6 +400,8 @@ class QueryParser:
                 raise Exception("Evidence line corrupted, variable value " + words[i+1] + ' not found')
 
             self.__evidence[words[i]] = words[i+1]
+
+        print(self.__evidence)
 
         self.evidence_str = line
 
@@ -427,10 +432,10 @@ class SolWriter:
         self.__f = open(f_name, mode='w')
 
     def write_sol(self, sol, query_string, evidence_string, step_by_step=None):
-        self.__f.write('##########SOLUTION##########\n')
-        self.__f.write(query_string)
-        self.__f.write(evidence_string)
-        sol_str = 'QUERY_DIST'
+        self.__f.write('########## SOLUTION ##########\n')
+        self.__f.write('\n' + query_string)
+        self.__f.write('\n' +  evidence_string)
+        sol_str = '\nQUERY_DIST'
 
         solo_key = sol.keys() #the puns are real
 
@@ -441,7 +446,7 @@ class SolWriter:
 
         if step_by_step:
             self.__f.write('\n')
-            self.__f.write('\n##########STEPS##########')
+            self.__f.write('\n########## STEPS ##########')
 
             for line in step_by_step:
                 self.__f.write(line)
