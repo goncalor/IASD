@@ -55,7 +55,8 @@ class BayesNet:
 
         step_nr = 0
         for var in ordering:
-            self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
+            self.__add_new_state_verbose(step_nr, factors)
+
             step_nr += 1
 
             # join and sum factors that include var
@@ -64,23 +65,18 @@ class BayesNet:
                 if var in factor:
                     subset.append(factor)
 
-            self.step_by_step += '\n\tJoin ' + str(subset)
-            for fac in subset:
-                self.step_by_step += '\n\n\t\t' + str(list(fac.vars_.keys()))
-                for row in fac.table:
-                    self.step_by_step += '\n\t\t' + str(row) + ' ' + str(fac.table[row])
+            self.__add_factor_table_verbose(subset)
 
             new_factor = Factor.join(subset)
             new_factor.eliminate(var)
+
+            self.step_by_step += '\n\n\tEliminate ' + str(var)
 
             for i in subset:
                 factors.remove(i)
             factors.append(new_factor)
 
-            self.step_by_step += '\n\n\t\tNew Factor: '
-            for row in new_factor.table:
-                    #print('\n\t\t' + str(row), str(fac.table[row]))
-                    self.step_by_step += '\n\t\t\t' + str(row) + ' ' + str(new_factor.table[row])
+            self.__add_new_factor_verbose(new_factor)
 
         self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
         #print('\nsolucao step by step:\n\n', self.step_by_step)
@@ -105,6 +101,20 @@ class BayesNet:
         #print(final_factor)
         return ppd_table
 
+    def __add_new_state_verbose(self, step_nr, factors):
+        self.step_by_step += '\n\n' + str(step_nr) + ' Factors: ' + str(factors)
+
+    def __add_factor_table_verbose(self, subset):
+        self.step_by_step += '\n\tJoin ' + str(subset)
+        for fac in subset:
+            self.step_by_step += '\n\n\t\t' + str(list(fac.vars_.keys()))
+            for row in fac.table:
+                self.step_by_step += '\n\t\t' + str(row) + ' ' + str(fac.table[row])
+
+    def __add_new_factor_verbose(self, new_factor):
+        self.step_by_step += '\n\n\t\tNew Factor: '
+        for row in new_factor.table:
+                self.step_by_step += '\n\t\t\t' + str(row) + ' ' + str(new_factor.table[row])
 
     def __getitem__(cls, varname):
         return cls.net[varname]

@@ -427,18 +427,23 @@ class SolWriter:
         self.__f = open(f_name, mode='w')
 
     def write_sol(self, sol, query_string, evidence_string, step_by_step=None):
+        self.__f.write('##########SOLUTION##########\n')
         self.__f.write(query_string)
         self.__f.write(evidence_string)
         sol_str = 'QUERY_DIST'
 
-        self.__f.write(sol_str)
+        solo_key = sol.keys() #the puns are real
 
+        for key in solo_key:
+            sol_str += ' ' + key[0] + ' ' + str(sol[key])
+
+        self.__f.write(sol_str)
 
         if step_by_step:
             self.__f.write('\n')
-            self.__f.write('##########STEPS##########')
+            self.__f.write('\n##########STEPS##########')
 
-            for line in sol:
+            for line in step_by_step:
                 self.__f.write(line)
 
     def close_file(self):

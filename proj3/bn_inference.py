@@ -39,11 +39,7 @@ if __name__ == "__main__":
 
     bn = BayesNet(bnp.parsed)
 
-
-    #ppd = bn.ppd(vartoinf, evidence)
-    ppd = bn.ppd('Burglary', {'JohnCalls': 't', 'MaryCalls': 't'})
-
-    print('ppd', ppd)
+    ppd = bn.ppd([vartoinf], evidence)
 
     sol_write = SolWriter(args.query.name)
     if args.verbose:
