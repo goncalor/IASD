@@ -83,6 +83,11 @@ class BayesNet:
 
         final_factor = Factor.join(factors)
 
+        # remove evidence columns
+        for var in evidence:
+            if var not in query:
+                final_factor.eliminate(var)
+
         # build the final, normalized table
         norm_constant = 0
         for row in final_factor.table:
@@ -94,11 +99,6 @@ class BayesNet:
 
         #print('ppd table', ppd_table)
 
-        # remove evidence columns
-        for var in evidence:
-            final_factor.eliminate(var)
-
-        #print(final_factor)
         return ppd_table
 
     def __add_new_state_verbose(self, step_nr, factors):
