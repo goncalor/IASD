@@ -401,8 +401,6 @@ class QueryParser:
 
             self.__evidence[words[i]] = words[i+1]
 
-        print(self.__evidence)
-
         self.evidence_str = line
 
 
@@ -440,7 +438,8 @@ class SolWriter:
         solo_key = sol.keys() #the puns are real
 
         for key in solo_key:
-            sol_str += ' ' + key[0] + ' ' + str(sol[key])
+            #sol_str += ' ' + key[0] + ' ' + str(sol[key])
+            sol_str += ' ' + key[0] + ' ' + '{:.4f}'.format(sol[key])
 
         self.__f.write(sol_str)
 

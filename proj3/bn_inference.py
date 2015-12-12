@@ -20,22 +20,19 @@ if __name__ == "__main__":
     print('Parsing Bayesian network from ' + args.bayesnet.name + '... ', end = '')
     bnp = BNParser(args.bayesnet)
     bnp.parse()
-    print('Done.\n')
+    print('Done.')
 
-    # TODO read query. substitute aliases by names or vice versa
-
+    print('Parsing query from ' + args.query.name + '... ', end = '')
     qparser = QueryParser(bnp, args.query)
     qparser.parse()
     evidence = qparser.get_evidence()
     vartoinf = qparser.get_var()
+    print('Done.\n')
 
-    # create factors from parsed data
-    # obtain query, evidence
-    # compute hidden variables
-    # variable elimination
-
+    # create the Bayesian network
     bn = BayesNet(bnp.parsed)
 
+    # compute the poseterior probability distribution
     ppd = bn.ppd([vartoinf], evidence)
 
     sol_write = SolWriter(args.query.name)
