@@ -54,9 +54,7 @@ class BayesNet:
         hidden_vars = list(hidden_vars)
 
         # TODO apply an ordering function
-        # TODO!!!! undo this
-        #ordering = hidden_vars
-        ordering = ['Alarm', 'Earthquake']
+        ordering = hidden_vars
 
         for var in ordering:
             # join and sum factors that include var
