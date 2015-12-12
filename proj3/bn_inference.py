@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # variable elimination
 
     bn = BayesNet(bnp.parsed)
-    ppd = bn.ppd([], {'Burglary': 't'})
+    ppd = bn.ppd(['Burglary'], {'JohnCalls': 't', 'MaryCalls': 't'})
 
 
     # write solutions to a file

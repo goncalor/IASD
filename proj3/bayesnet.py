@@ -1,6 +1,7 @@
 from factor import Factor
 from itertools import product
 from collections import OrderedDict
+import pprint
 
 class BayesNet:
 
@@ -44,29 +45,18 @@ class BayesNet:
             for row in product(*dom):
                 table[row] = self[vars_[-1]]['cpt'][row]
 
-            #print(k, dom)
             factors.append(Factor(OrderedDict(zip(vars_, dom)), table))
 
         if self.verbose:
             print(factors)
 
-        # debug
-        #tmp = []
-        #for factor in factors:
-        #    if 'Burglary' in factor:
-        #        tmp.append(factor)
-        #print(tmp)
-        #newfactor = Factor.join(tmp)
-        #print(newfactor)
-        #newfactor.eliminate('Burglary')
-        #print(newfactor)
-
         hidden_vars = set(self.net.keys()) - set(query) - set(evidence)
         hidden_vars = list(hidden_vars)
-        print(hidden_vars)
 
         # TODO apply an ordering function
-        ordering = hidden_vars
+        # TODO!!!! undo this
+        #ordering = hidden_vars
+        ordering = ['Alarm', 'Earthquake']
 
         for var in ordering:
             # join and sum factors that include var
@@ -74,14 +64,18 @@ class BayesNet:
             for factor in factors:
                 if var in factor:
                     subset.append(factor)
-            #print("subset", subset)
             new_factor = Factor.join(subset)
+            new_factor.eliminate(var)
 
             for i in subset:
                 factors.remove(i)
             factors.append(new_factor)
 
-        print("factors", factors)
+        print(new_factor)
+        print(factors)
+        factors = [Factor.join(factors)]
+        print(factors)
+        print(factors[0])
 
 
     def __getitem__(cls, varname):

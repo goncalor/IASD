@@ -1,4 +1,5 @@
 import pprint
+from collections import OrderedDict
 
 class BNParser:
     """
@@ -55,8 +56,6 @@ class BNParser:
             del net[k]['alias']
 
         self.parsed = net
-        pprint.pprint(self.parsed)
-        print(self.aliases)
 
         # rename parents who are using an alias
         for value in self.parsed.values():
@@ -270,6 +269,11 @@ class BNParser:
 
         Raises:
             Many malformed file errors.
+
+        Notes:
+            The first column refers to the variable 'varname'. The others refer
+            to its parents and the last has the value of the conditional
+            probability.
         """
         table = {}
         for chunk in self.__chunk(lst, items_per_row):
@@ -280,25 +284,25 @@ class BNParser:
                         "invalid probability")
 
             # check if values are in the parents' domains
-            for parent, val in zip(self.parsed[varname]['parents'], chunk[:-2]):
+            for parent, val in zip(self.parsed[varname]['parents'], chunk[1:-1]):
                 if val not in self.parsed[parent]['values']:
                     raise Exception("problematic CPT table for '" + varname +
                             "': '" + val + "' is not in the domain of '" +
                             parent + "'")
 
             # check if the value for 'varname' is in its domain
-            if chunk[-2] not in self.parsed[varname]['values']:
+            if chunk[0] not in self.parsed[varname]['values']:
                 raise Exception("problematic CPT table for '" + varname +
-                        "': '" + chunk[-2] + "' is not in the domain of '" +
+                        "': '" + chunk[0] + "' is not in the domain of '" +
                         varname + "'")
 
             # check if this is a repeated row in the table
-            if tuple(chunk[:-1]) in table:
+            if tuple(tuple(chunk[1:-1]+[chunk[0]])) in table:
                 raise Exception("problematic CPT table for '" + varname +
                         "': there are repeated rows")
 
             # all checks done. add this entry to table
-            table[tuple(chunk[:-1])] = float(chunk[-1])
+            table[tuple(chunk[1:-1]+[chunk[0]])] = float(chunk[-1])
 
         return table
 
