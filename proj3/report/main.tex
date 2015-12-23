@@ -1,0 +1,121 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage[a4paper]{geometry}
+\usepackage{sectsty}
+\geometry{textwidth=480pt, textheight=700pt, noheadfoot, nomarginpar}
+\usepackage[square, numbers, comma, sort&compress]{natbib}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{wrapfig}
+\usepackage{ragged2e} 
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{url}
+\usepackage{indentfirst}
+
+\footskip = 40pt
+
+\begin{document}
+
+\numberwithin{equation}{subsection}
+\numberwithin{table}{subsection}
+\numberwithin{figure}{subsection}
+
+%Title
+\begin{minipage}{0.8\textwidth}
+    \Large \textbf{Artificial Intelligence and Decision Systems}\vspace{0.2cm}\\
+    Assignment \#3\vspace{0.2cm}\\
+    \normalsize Professor Luís Manuel Marques Custódio
+\end{minipage}
+\begin{minipage}{0\textwidth}
+    \raggedleft
+    \includegraphics[scale=0.65]{ist_logo.png}
+\end{minipage}
+
+\vspace{0.2cm}
+\begin{minipage}{0.8\textwidth}
+    \textbf{Students:} \hspace{0.3cm}
+    Henrique Carvalho - 70327 \hspace{0.3cm} Gonçalo Ribeiro -  73294
+
+\end{minipage}
+
+\rule{\textwidth}{1pt}
+
+
+%1st SECTION- ---------------------------------------------
+\section{Usage}
+The program is called using the following command :
+
+\vspace{4mm}
+\hspace{1cm}\texttt{python3 bn\_inference.py [-h] [--verbose] bayesnet query}
+\vspace{4mm}
+\par
+The input BN and query files are mandatory, the verbose flag allows to ask a step-by-step solution. A help option also exists.
+
+\section{File Parsers}
+\subsection{Bayes Network Input}
+The Bayesian network parser, \texttt{BNParser}, is thoroughly protected. It has 24 points of failure (\texttt{raise}s), each with a costum error message. It is well commented and the error messages also help understanding what the code does. Some features of the \texttt{BNParser} class are the following:
+
+\begin{itemize}
+	\setlength\itemsep{0em}
+    \item Comments are allowed at the end of any line
+    \item Variables' names are case sensitive
+    \item Error if some declaration other than \texttt{VAR} and \texttt{CPT} are found (case insensitive)
+    \item Error if more than one value is given to \texttt{name}, \texttt{alias} or \texttt{parents} in a VAR definition
+    \item Error if \texttt{name} or \texttt{values} are missing in a \texttt{VAR}
+    \item Error if the \texttt{CPT} contains a value not allowed for the variable
+    \item Error if a \texttt{CPT} refers to an undefined \texttt{VAR}
+    \item Error if the number of entries in a \texttt{CPT} is not consistent with its parents' domains' cardinality and the cardinality of the domain of the variable itself.
+\end{itemize}
+
+\subsection{Query Input}
+For this part, we defended the parser from the following situations:
+
+\begin{itemize}
+	\setlength\itemsep{0em}
+    \item A variable is not defined in the Bayes Network
+    \item There is more than one variable in the variables to query (the \texttt{QueryParser} does not allow this, but the \texttt{BayesNet.ppd()} method \emph{does} support multiple query variables)
+    \item The expected \texttt{EVIDENCE} word is not found
+    \item The number of evidence variables in the file is negative
+    \item The number of evidence variables does not match the one stated
+    \item The evidence is for a variable that does not exist in the Bayesian network
+    \item The value of an evidence variable is not in the domain for that variable
+    \item The values of the domain are case insensitive, so that both \texttt{T} and \texttt{t} correspond to the same value in the domain.
+\end{itemize}
+
+\section{Data Structures}
+Each of the structures referred in the following subsections are implement as a class. The internals of those classes are described.
+
+\subsection{Bayes Network Parser -- \texttt{BNParser}}
+
+This parser stores all the information retrieved in a dictionary that is later used by \texttt{BayesNet}. All the aliases appearances are converted to to the names of the variables. A dictionary converting aliases to names is stored in the parser object so that alias-name conversion can later be performed by the \texttt{QueryParser} object.
+
+The use of aliases instead of names in the program could speed up the dictionaries' hashing, but but the names were preferred in favour of the aliases because they carry more information about the problem.
+
+The method that performs the exact inference is called \texttt{ppd()}. The name stands for `posterior probability distribution.' The Variable Elimination algorithm is performed in this method. It is interesting to note that our implementation supports multiple query variables.
+
+\subsection{Bayesian Network -- \texttt{BayesNet}}
+A dictionary was used to implement the Bayesian network. It is indexed with each variable's name and the values of the dictionary are information regarding each variable, namely its parents, domain and CPT. The parents are stored in a list and so are the possible values for the variable (its domain). The CPT is stored as a dictionary whose keys are tuples corresponding to the combination of values of the parents and the variable itself. The values of this dictionary are the conditional probabilities.
+
+\subsection{Factors -- \texttt{Factor}}
+The \texttt{Factor} class stores the variables for that factor and the table with probabilities corresponding to those variables. The class provides two important methods: \texttt{join()} and \texttt{eliminate()}. The first performs the product of an arbitrary number of factors; the second eliminates a single variable from an existing factor. These methods are used in \texttt{BayesNet.ppd()} to perform the Variable Elimination algorithm.
+
+
+\section{Output File}
+To write the solution, there is also a class that receives the name of the query file. To print the solution file, is required a solution (CPT for the query variable), a string carrying the query (read from the query file),  an evidence string (also read from the query file) and, if the verbose option was selected, the step-by-step solution string in the \texttt{BayesNet} class after inference was done with \texttt{ppd()}.
+
+The output file starts by presenting the query variable, the evidence and the CPT for the solution.
+If the verbose option is selected, a step-by-step solution will be presented. For each step, in the Variable Elimination algorithm, first all factors will be printed in one line. Then follows the join part, which shows the factors to join and the CPT for each one of them. After joining, comes the variable to eliminate and the factor and respective CPT resulting from it. 
+
+
+% references
+\nocite{*}
+\bibliography{references}
+\bibliographystyle{abbrv}
+
+\end{document}
