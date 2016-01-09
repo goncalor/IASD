@@ -219,7 +219,7 @@ class BNParser:
         expected_nr_items = items_per_row * expected_nr_rows
 
         # process the first line if needed
-        lst.extend(firstline[1:])
+        lst.extend([i.lower() for i in firstline[1:]])
 
         # process lines
         if len(lst) == expected_nr_items:
@@ -237,7 +237,7 @@ class BNParser:
                 line = self.file_.readline()
                 continue    # parse next line
 
-            line = line.split()
+            line = line.lower().split()
             lst.extend(line)
 
             if len(lst) == expected_nr_items:
